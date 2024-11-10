@@ -46,7 +46,7 @@ export BABL_PATH=$CURRENTDIR/shared/lib/babl-0.1
 export GEGL_PATH=$CURRENTDIR/shared/lib/gegl-0.4
 export GIMP2_DATADIR="$CURRENTDIR"/share/gimp/2.0
 export GIMP2_SYSCONFDIR="$CURRENTDIR"/etc/gimp/2.0
-export GIMP2_PLUGINDIR="$CURRENTDIR"/shared/lib/gimp/2.0/plug-ins
+export GIMP2_PLUGINDIR="$CURRENTDIR"/shared/lib/gimp/2.0
 
 "$CURRENTDIR"/bin/gimp "$@"' > ./AppRun
 chmod +x ./AppRun
