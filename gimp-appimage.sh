@@ -20,13 +20,16 @@ mkdir -p ./"$PACKAGE"/AppDir/shared/lib \
 	./"$PACKAGE"/AppDir/etc
 cd ./"$PACKAGE"/AppDir
 
-cp -r /usr/share/gimp ./usr/share
-cp -r /etc/gimp ./etc
-cp -r /usr/share/locale ./usr/share
-cp /usr/share/applications/$DESKTOP ./usr/share/applications
-cp /usr/share/applications/$DESKTOP ./
+cp -r /usr/share/gimp      ./usr/share
+cp -r /usr/share/locale    ./usr/share
+cp -r /usr/share/pixmaps   ./usr/share
+cp -r /etc/gimp            ./etc
+
+cp /usr/share/applications/$DESKTOP              ./usr/share/applications
+cp /usr/share/applications/$DESKTOP              ./
 cp /usr/share/icons/hicolor/256x256/apps/"$ICON" ./
-ln -s ./usr/share ./share
+
+ln -s ./usr/share  ./share
 ln -s ./shared/lib ./lib
 
 # ADD LIBRARIES
@@ -91,5 +94,5 @@ chmod +x ./appimagetool
 
 mv ./*.AppImage* ../
 cd ..
-#rm -rf ./"$PACKAGE"
+rm -rf ./"$PACKAGE"
 echo "All Done!"
