@@ -47,6 +47,7 @@ cp -nv /usr/lib/libijs*       ./shared/lib
 cp -nv /usr/lib/libjbig2dec*  ./shared/lib
 cp -nv /usr/lib/libgpm*       ./shared/lib
 cp -nv /usr/lib/libidn*       ./shared/lib
+cp -nv /usr/lib/libpaper*     ./shared/lib
 
 # CREATE APPRUN
 echo '#!/bin/sh
