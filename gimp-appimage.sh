@@ -37,12 +37,15 @@ wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
 ./lib4bin -p -v -r -s /usr/bin/gimp*
 rm -f ./lib4bin
-cp -nv /usr/lib/libgimp*   ./shared/lib
-cp -nv /usr/lib/libaa*     ./shared/lib
-cp -nv /usr/lib/libmng*    ./shared/lib
-cp -nv /usr/lib/libgs*     ./shared/lib
-cp -nv /usr/lib/libslang*  ./shared/lib
-cp -nv /usr/lib/libijs*    ./shared/lib
+cp -nv /usr/lib/libgimp*      ./shared/lib
+cp -nv /usr/lib/libaa*        ./shared/lib
+cp -nv /usr/lib/libmng*       ./shared/lib
+cp -nv /usr/lib/libgs*        ./shared/lib
+cp -nv /usr/lib/libslang*     ./shared/lib
+cp -nv /usr/lib/libijs*       ./shared/lib
+cp -nv /usr/lib/libijs*       ./shared/lib
+cp -nv /usr/lib/libjbig2dec*  ./shared/lib
+cp -nv /usr/lib/libgpm*       ./shared/lib
 
 # CREATE APPRUN
 echo '#!/bin/sh
