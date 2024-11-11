@@ -35,7 +35,8 @@ ln -s ./shared/lib ./lib
 # ADD LIBRARIES
 wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
-./lib4bin -p -v -r -s /usr/bin/gimp* /usr/lib/libgimp*
+./lib4bin -p -v -r -s /usr/bin/gimp*
+cp -nv /usr/lib/libgimp* ./shared/lib
 rm -f ./lib4bin
 
 # CREATE APPRUN
@@ -48,8 +49,15 @@ export GIMP2_DATADIR="$CURRENTDIR"/share/gimp/2.0
 export GIMP2_SYSCONFDIR="$CURRENTDIR"/etc/gimp/2.0
 export GIMP2_PLUGINDIR="$CURRENTDIR"/shared/lib/gimp/2.0
 
+# This is needed somehow?
+export LD_LIBRARY_PATH="$CURRENTDIR/shared/lib:$LD_LIBRARY_PATH"
+
 "$CURRENTDIR"/bin/gimp "$@"' > ./AppRun
 chmod +x ./AppRun
+
+# DEPLOY GIMP PLUGINS DEPENDENCIES
+find ./shared/lib/gimp -type f -exec ldd {} \; \
+	| awk -F"[> ]" '{print $4}' | xargs -I {} cp -vn {} ./shared/lib
 
 # DEPLOY GDK
 echo "Deploying gdk..."
