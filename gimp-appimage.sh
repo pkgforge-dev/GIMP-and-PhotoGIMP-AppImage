@@ -37,6 +37,7 @@ wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
 ./lib4bin -p -v -r -s /usr/bin/gimp*
 rm -f ./lib4bin
+
 cp -nv /usr/lib/libgimp*      ./shared/lib
 cp -nv /usr/lib/libaa*        ./shared/lib
 cp -nv /usr/lib/libmng*       ./shared/lib
@@ -53,21 +54,33 @@ cp -nv /usr/lib/libpaper*     ./shared/lib
 echo '#!/bin/sh
 CURRENTDIR="$(dirname "$(readlink -f "${0}")")"
 
+# We patched a relative path to the interpreter for the gimp plugins
+# so we need to cd here for this to work
+cd "$CURRENTDIR" || exit 1
+
+# this can be improved to avoid setting this variable
+export LD_LIBRARY_PATH="$CURRENTDIR/shared/lib:$LD_LIBRARY_PATH"
+
 export BABL_PATH=$CURRENTDIR/shared/lib/babl-0.1
 export GEGL_PATH=$CURRENTDIR/shared/lib/gegl-0.4
 export GIMP2_DATADIR="$CURRENTDIR"/share/gimp/2.0
 export GIMP2_SYSCONFDIR="$CURRENTDIR"/etc/gimp/2.0
 export GIMP2_PLUGINDIR="$CURRENTDIR"/shared/lib/gimp/2.0
 
-# This is needed somehow?
-export LD_LIBRARY_PATH="$CURRENTDIR/shared/lib:$LD_LIBRARY_PATH"
-
 "$CURRENTDIR"/bin/gimp "$@"' > ./AppRun
 chmod +x ./AppRun
 
 # DEPLOY GIMP PLUGINS DEPENDENCIES
+echo "Deploying gimp plugins..."
+cp -rv /usr/lib/gimp     ./shared/lib
 find ./shared/lib/gimp -type f -exec ldd {} \; \
-	| awk -F"[> ]" '{print $4}' | xargs -I {} cp -vn {} ./shared/lib
+	| awk -F"[> ]" '{print $4}' | xargs -I {} cp -vn {} ./shared/lib || true
+
+# patch a relative interpreter path for the gimp plugins
+# hopefully this can be avoided in the future
+echo "Deploying patching gimp plugins..."
+patchelf --set-interpreter "./shared/lib/ld-linux-x86-64.so.2" \
+	./shared/lib/gimp/2.0/plug-ins/*/*
 
 # DEPLOY GDK
 echo "Deploying gdk..."
@@ -84,6 +97,7 @@ find ./shared/lib -type f -regex '.*gdk.*loaders.cache' \
 # DEPLOY GTK
 echo "Deploying gtk..."
 cp -rv /usr/lib/gtk* ./shared/lib
+
 echo "Deploying gdk deps..."
 find ./shared/lib/gtk* -type f -name '*.so*' -exec ldd {} \; \
 	| awk -F"[> ]" '{print $4}' | xargs -I {} cp -vn {} ./shared/lib || true
@@ -92,8 +106,8 @@ find ./shared/lib -type f -regex '.*gdk.*immodules.cache' \
 	-exec sed -i 's|/.*lib.*/gtk.*/.*/3.0.0/||g' {} \;
 
 # DEPLOY WHATEVER THESE ARE
+echo "Deploying the rest of stuff..."
 cp -rv /usr/lib/gio      ./shared/lib
-cp -rv /usr/lib/gimp     ./shared/lib
 cp -rv /usr/lib/babl-0.1 ./shared/lib
 cp -rv /usr/lib/gegl-0.4 ./shared/lib
 find ./shared/lib/*/* -type f -name '*.so*' -exec ldd {} \; \
