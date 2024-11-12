@@ -11,7 +11,7 @@ export APPIMAGE_EXTRACT_AND_RUN=1
 export VERSION=$(pacman -Q $PACKAGE | awk 'NR==1 {print $2; exit}')
 
 APPIMAGETOOL="https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage"
-UPINFO="gh-releases-zsync|$GITHUB_REPOSITORY_OWNER|GIMP-AppImage|continuous|*$ARCH.AppImage.zsync"
+UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|continuous|*$ARCH.AppImage.zsync"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
 
 # Prepare AppDir
@@ -61,10 +61,10 @@ cd "$CURRENTDIR" || exit 1
 # this can be improved to avoid setting this variable
 export LD_LIBRARY_PATH="$CURRENTDIR/shared/lib:$LD_LIBRARY_PATH"
 
-export BABL_PATH=$CURRENTDIR/shared/lib/babl-0.1
-export GEGL_PATH=$CURRENTDIR/shared/lib/gegl-0.4
+# set gimp variables
 export GIMP2_DATADIR="$CURRENTDIR"/share/gimp/2.0
 export GIMP2_SYSCONFDIR="$CURRENTDIR"/etc/gimp/2.0
+export GIMP2_LOCALEDIR="$CURRENTDIR"/share/locale
 export GIMP2_PLUGINDIR="$CURRENTDIR"/shared/lib/gimp/2.0
 
 "$CURRENTDIR"/bin/gimp "$@"' > ./AppRun
@@ -78,7 +78,7 @@ find ./shared/lib/gimp -type f -exec ldd {} \; \
 
 # patch a relative interpreter path for the gimp plugins
 # hopefully this can be avoided in the future
-echo "Deploying patching gimp plugins..."
+echo "Patching gimp plugins..."
 patchelf --set-interpreter "./shared/lib/ld-linux-x86-64.so.2" \
 	./shared/lib/gimp/2.0/plug-ins/*/*
 
