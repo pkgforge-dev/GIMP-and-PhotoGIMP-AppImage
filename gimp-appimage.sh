@@ -54,13 +54,6 @@ cp -nv /usr/lib/libpaper*     ./shared/lib
 echo '#!/bin/sh
 CURRENTDIR="$(dirname "$(readlink -f "${0}")")"
 
-# We patched a relative path to the interpreter for the gimp plugins
-# so we need to cd here for this to work
-cd "$CURRENTDIR" || exit 1
-
-# this can be improved to avoid setting this variable
-export LD_LIBRARY_PATH="$CURRENTDIR/shared/lib:$LD_LIBRARY_PATH"
-
 # set gimp variables
 export GIMP2_DATADIR="$CURRENTDIR"/share/gimp/2.0
 export GIMP2_SYSCONFDIR="$CURRENTDIR"/etc/gimp/2.0
@@ -75,12 +68,6 @@ echo "Deploying gimp plugins..."
 cp -rv /usr/lib/gimp     ./shared/lib
 find ./shared/lib/gimp -type f -exec ldd {} \; \
 	| awk -F"[> ]" '{print $4}' | xargs -I {} cp -vn {} ./shared/lib || true
-
-# patch a relative interpreter path for the gimp plugins
-# hopefully this can be avoided in the future
-echo "Patching gimp plugins..."
-patchelf --set-interpreter "./shared/lib/ld-linux-x86-64.so.2" \
-	./shared/lib/gimp/2.0/plug-ins/*/*
 
 # DEPLOY GDK
 echo "Deploying gdk..."
@@ -113,6 +100,21 @@ cp -rv /usr/lib/gegl-0.4 ./shared/lib
 find ./shared/lib/*/* -type f -name '*.so*' -exec ldd {} \; \
 	| awk -F"[> ]" '{print $4}' | xargs -I {} cp -vn {} ./shared/lib || true
 
+# sharun the gimp plugins
+echo "Sharunning the gimp plugins..."
+mkdir -p ./shared/lib/gimp/2.0/shared/bin
+cp ./sharun ./shared/lib/gimp/2.0
+( cd ./shared/lib/gimp/2.0
+	for plugin in ./plug-ins/*/*; do
+		if file "$plugin" | grep -i 'elf.*executable'; then
+			mv "$plugin" ./shared/bin && ln -s ../../sharun "$plugin"
+			echo "Sharan $plugin"
+		else
+			echo "$plugin is not a binary, skipping..."
+		fi
+	done
+)
+ln -s ../../../ ./shared/lib/gimp/2.0/shared/lib
 ./sharun -g
 
 # MAKE APPIAMGE WITH FUSE3 COMPATIBLE APPIMAGETOOL
