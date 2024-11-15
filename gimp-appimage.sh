@@ -130,12 +130,16 @@ llvm-objcopy --update-section=.upd_info=data.upd_info \
 	--set-section-flags=.upd_info=noload,readonly ./uruntime
 printf 'AI\x02' | dd of=./uruntime bs=1 count=3 seek=8 conv=notrunc
 
+echo "Generating AppImage..."
 ./uruntime --appimage-mkdwarfs -f \
 	--set-owner 0 --set-group 0 \
 	--no-history --no-create-timestamp \
 	--compression zstd:level=22 -S26 -B16 \
 	--header uruntime \
 	-i ./AppDir -o "$PACKAGE"-"$VERSION"-"$ARCH"-anylinux.AppImage
+
+echo "Generating zsync file..."
+zsyncmake *.AppImage -u *.AppImage
 
 mv ./*.AppImage* ../
 cd ..
