@@ -121,7 +121,7 @@ ln -s ../../../ ./shared/lib/gimp/2.0/shared/lib
 # MAKE APPIMAGE WITH URUNTIME
 cd ..
 wget -q "$URUNTIME" -O ./uruntime
-chmod +x ./appimagetool
+chmod +x ./uruntime
 
 ./uruntime --appimage-mkdwarfs -f \
 	--set-owner 0 --set-group 0 \
