@@ -32,6 +32,7 @@ cp /usr/share/icons/hicolor/256x256/apps/"$ICON" ./
 
 ln -s ./usr/share  ./share
 ln -s ./shared/lib ./lib
+ln -s ./"$ICON"    ./.DirIcon
 
 # ADD LIBRARIES
 wget "$LIB4BN" -O ./lib4bin
