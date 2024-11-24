@@ -23,6 +23,7 @@ cd ./"$PACKAGE"/AppDir
 
 cp -r /usr/share/gimp      ./usr/share
 cp -r /usr/share/locale    ./usr/share
+cp -r /usr/lib/locale      ./usr/lib
 cp -r /usr/share/pixmaps   ./usr/share
 cp -r /etc/gimp            ./etc
 
