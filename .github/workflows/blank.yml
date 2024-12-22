@@ -18,6 +18,7 @@ jobs:
     - name: build
       if: always()
       run: |
+        sed -i 's/DownloadUser/#DownloadUser/g' /etc/pacman.conf
         pacman -Syu --noconfirm base-devel curl desktop-file-utils git wget \
           base-devel patchelf gtk3 strace gimp ffmpeg ghostscript llvm
 
