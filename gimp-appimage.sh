@@ -39,7 +39,8 @@ chmod +x ./lib4bin
 xvfb-run -a -- ./lib4bin -p -v -s -k \
 	/usr/bin/gimp* \
 	/usr/lib/libgimp* \
-	/usr/lib/gdk-pixbuf-*/*/* \
+	/usr/lib/gdk-pixbuf-*/*/*/* \
+	/usr/lib/gtk-*/*/*/* \
 	/usr/lib/gio/*/* \
 	/usr/lib/babl-*/* \
 	/usr/lib/gegl-*/* \
