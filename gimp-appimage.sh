@@ -57,7 +57,8 @@ xvfb-run -a -- ./lib4bin -p -v -s -k \
 	/usr/lib/libXpm.so* \
 	/usr/lib/libheif.so* \
 	/usr/lib/libwmf* \
-	/usr/lib/libudev.so*
+	/usr/lib/libudev.so* \
+	/usr/lib/libdl.so.2
 
 cp -vn /usr/lib/gegl-*/* ./shared/lib/gegl-*
 cp -rvn /usr/lib/gimp    ./shared/lib
