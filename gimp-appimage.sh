@@ -66,9 +66,9 @@ cp -rvn /usr/lib/gimp    ./shared/lib
 
 # sharun the gimp plugins
 echo "Sharunning the gimp plugins..."
-mkdir -p ./shared/lib/gimp/2.0/shared/bin
-cp ./sharun ./shared/lib/gimp/2.0
-( cd ./shared/lib/gimp/2.0
+mkdir -p ./shared/lib/gimp/3.0/shared/bin
+cp ./sharun ./shared/lib/gimp/3.0
+( cd ./shared/lib/gimp/3.0
 	for plugin in ./plug-ins/*/*; do
 		if file "$plugin" | grep -i 'elf.*executable'; then
 			mv "$plugin" ./shared/bin && ln -s ../../sharun "$plugin"
@@ -78,13 +78,13 @@ cp ./sharun ./shared/lib/gimp/2.0
 		fi
 	done
 )
-ln -s ../../../ ./shared/lib/gimp/2.0/shared/lib
+ln -s ../../../ ./shared/lib/gimp/3.0/shared/lib
 
 # PREPARE SHARUN
-echo 'GIMP2_DATADIR=${SHARUN_DIR}/share/gimp/2.0
-GIMP2_SYSCONFDIR=${SHARUN_DIR}/etc/gimp/2.0
-GIMP2_LOCALEDIR=${SHARUN_DIR}/share/locale
-GIMP2_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/2.0' > ./.env
+echo 'GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
+GIMP3_SYSCONFDIR=${SHARUN_DIR}/etc/gimp/3.0
+GIMP3_LOCALEDIR=${SHARUN_DIR}/share/locale
+GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0' > ./.env
 
 ln ./sharun ./AppRun
 ./sharun -g
