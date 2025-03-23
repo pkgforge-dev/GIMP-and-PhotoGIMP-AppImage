@@ -13,8 +13,7 @@ export STRACE_TIME=15
 
 UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|continuous|*$ARCH.AppImage.zsync"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
-URUNTIME=$(wget -q https://api.github.com/repos/VHSgunzo/uruntime/releases -O - \
-	| sed 's/[()",{} ]/\n/g' | grep -oi "https.*appimage.*dwarfs.*$ARCH$" | head -1)
+URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
 
 # Prepare AppDir
 mkdir -p ./AppDir/shared/lib ./AppDir/share ./AppDir/etc
@@ -28,10 +27,8 @@ cp -vr /etc/gimp            ./etc
 
 cp /usr/share/applications/"$DESKTOP"             ./
 cp /usr/share/icons/hicolor/256x256/apps/"$ICON"  ./
-
-ln -s ./           ./usr
-ln -s ./shared/lib ./lib
 ln -s ./"$ICON"    ./.DirIcon
+ln -s ./           ./usr
 
 # ADD LIBRARIES
 wget "$LIB4BN" -O ./lib4bin
@@ -39,6 +36,7 @@ chmod +x ./lib4bin
 ./lib4bin -p -v -k -s \
 	/usr/bin/gimp* \
 	/usr/lib/libgimp* \
+	/usr/lib/gimp/*/modules/* \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
 	/usr/lib/gtk-*/*/*/* \
 	/usr/lib/gio/*/* \
@@ -63,22 +61,16 @@ chmod +x ./lib4bin
 	/usr/lib/libudev.so* \
 	/usr/lib/libdl.so.2
 
-cp -vn /usr/lib/gegl-*/* ./shared/lib/gegl-*
-cp -rvn /usr/lib/gimp    ./shared/lib
+cp -vn /usr/lib/gegl-*/*.json ./shared/lib/gegl-*
+cp -rvn /usr/lib/gimp         ./shared/lib
 
 # sharun the gimp plugins
 echo "Sharunning the gimp plugins..."
-( cd ./shared/lib/gimp/3.0
-	for plugin in ./plug-ins/*/*; do
-		if file "$plugin" | grep -i 'elf.*executable'; then
-			mv "$plugin" ../../../bin \
-				&& ln -s ../../../../../../sharun  "$plugin"
-			echo "Sharan $plugin"
-		else
-			echo "$plugin is not a binary, skipping..."
-		fi
-	done
-)
+bins_to_find="$(find ./shared/lib/gimp/3.0 -exec file {} \; | grep -i 'elf.*executable' | awk -F':' '{print $1}')"
+for plugin in $bins_to_find; do
+	mv -v "$plugin" ./shared/bin && ln -sfr ./sharun "$plugin"
+	echo "Sharan $plugin"
+done
 
 # PREPARE SHARUN
 echo 'GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
@@ -96,16 +88,13 @@ chmod +x ./uruntime
 
 #Add udpate info to runtime
 echo "Adding update information \"$UPINFO\" to runtime..."
-printf "$UPINFO" > data.upd_info
-llvm-objcopy --update-section=.upd_info=data.upd_info \
-	--set-section-flags=.upd_info=noload,readonly ./uruntime
-printf 'AI\x02' | dd of=./uruntime bs=1 count=3 seek=8 conv=notrunc
+./uruntime --appimage-addupdinfo "$UPINFO"
 
 echo "Generating AppImage..."
 ./uruntime --appimage-mkdwarfs -f \
 	--set-owner 0 --set-group 0 \
 	--no-history --no-create-timestamp \
-	--compression zstd:level=22 -S25 -B16 \
+	--compression zstd:level=22 -S24 -B32 \
 	--header uruntime \
 	-i ./AppDir -o "$PACKAGE"-"$VERSION"-"$ARCH".AppImage
 
