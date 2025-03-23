@@ -74,11 +74,19 @@ for plugin in $bins_to_find; do
 	echo "Sharan $plugin"
 done
 
+# FIXME we should avoid this because it results in a need to change the current workign dir
+# For some reason setting BABL_PATH and GEGL_PATH causes a ton of errors to show up
+# Lets use the good old binary patching
+sed -i 's|/usr|././|' ./shared/lib/libbabl* ./shared/lib/libgegl*
+
 # PREPARE SHARUN
-echo 'GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
+echo 'SHARUN_WORKING_DIR=${SHARUN_DIR}
+GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
 GIMP3_SYSCONFDIR=${SHARUN_DIR}/etc/gimp/3.0
 GIMP3_LOCALEDIR=${SHARUN_DIR}/share/locale
-GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0' > ./.env
+GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0
+unset BABL_PATH
+unset GEGL_PATH' > ./.env
 
 ln ./sharun ./AppRun
 ./sharun -g
