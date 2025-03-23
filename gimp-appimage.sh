@@ -42,6 +42,8 @@ chmod +x ./lib4bin
 	/usr/lib/gio/*/* \
 	/usr/lib/babl-*/* \
 	/usr/lib/gegl-*/* \
+	/usr/lib/gvfs/* \
+	/usr/lib/libgthread-2.0.so* \
 	/usr/lib/libheif/* \
 	/usr/lib/libaa* \
 	/usr/lib/libasound.so* \
