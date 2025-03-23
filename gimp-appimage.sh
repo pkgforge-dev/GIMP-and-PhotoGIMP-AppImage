@@ -46,6 +46,7 @@ chmod +x ./lib4bin
 	/usr/lib/gegl-*/* \
 	/usr/lib/libheif/* \
 	/usr/lib/libaa* \
+	/usr/lib/libasound.so* \
 	/usr/lib/libmng* \
 	/usr/lib/libgs* \
 	/usr/lib/libslang* \
