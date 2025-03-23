@@ -36,7 +36,7 @@ ln -s ./"$ICON"    ./.DirIcon
 # ADD LIBRARIES
 wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
-xvfb-run -a -- ./lib4bin -p -v -s -k -e \
+./lib4bin -p -v -s -k \
 	/usr/bin/gimp* \
 	/usr/lib/libgimp* \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
