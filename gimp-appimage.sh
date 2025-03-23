@@ -77,7 +77,7 @@ done
 # FIXME we should avoid this because it results in a need to change the current workign dir
 # For some reason setting BABL_PATH and GEGL_PATH causes a ton of errors to show up
 # Lets use the good old binary patching
-sed -i 's|/usr|././|' ./shared/lib/libbabl* ./shared/lib/libgegl*
+sed -i 's|/usr/lib|././/lib|' ./shared/lib/libbabl* ./shared/lib/libgegl*
 
 # PREPARE SHARUN
 echo 'SHARUN_WORKING_DIR=${SHARUN_DIR}
