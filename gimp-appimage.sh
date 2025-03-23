@@ -13,8 +13,7 @@ export STRACE_TIME=15
 
 UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|continuous|*$ARCH.AppImage.zsync"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
-URUNTIME=$(wget -q https://api.github.com/repos/VHSgunzo/uruntime/releases -O - \
-	| sed 's/[()",{} ]/\n/g' | grep -oi "https.*appimage.*dwarfs.*$ARCH$" | head -1)
+URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
 
 # Prepare AppDir
 mkdir -p ./AppDir/shared/lib ./AppDir/share ./AppDir/etc
@@ -28,23 +27,26 @@ cp -vr /etc/gimp            ./etc
 
 cp /usr/share/applications/"$DESKTOP"             ./
 cp /usr/share/icons/hicolor/256x256/apps/"$ICON"  ./
-
-ln -s ./           ./usr
-ln -s ./shared/lib ./lib
 ln -s ./"$ICON"    ./.DirIcon
+ln -s ./           ./usr
 
 # ADD LIBRARIES
 wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
-xvfb-run -a -- ./lib4bin -p -v -s -k -e \
+./lib4bin -p -v -k -s \
 	/usr/bin/gimp* \
 	/usr/lib/libgimp* \
+	/usr/lib/gimp/*/modules/* \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
 	/usr/lib/gtk-*/*/*/* \
 	/usr/lib/gio/*/* \
 	/usr/lib/babl-*/* \
 	/usr/lib/gegl-*/* \
+	/usr/lib/gvfs/* \
+	/usr/lib/libgthread-2.0.so* \
+	/usr/lib/libheif/* \
 	/usr/lib/libaa* \
+	/usr/lib/libasound.so* \
 	/usr/lib/libmng* \
 	/usr/lib/libgs* \
 	/usr/lib/libslang* \
@@ -61,30 +63,30 @@ xvfb-run -a -- ./lib4bin -p -v -s -k -e \
 	/usr/lib/libudev.so* \
 	/usr/lib/libdl.so.2
 
-cp -vn /usr/lib/gegl-*/* ./shared/lib/gegl-*
-cp -rvn /usr/lib/gimp    ./shared/lib
+cp -vn /usr/lib/gegl-*/*.json ./shared/lib/gegl-*
+cp -rvn /usr/lib/gimp         ./shared/lib
 
 # sharun the gimp plugins
 echo "Sharunning the gimp plugins..."
-mkdir -p ./shared/lib/gimp/3.0/shared/bin
-cp ./sharun ./shared/lib/gimp/3.0
-( cd ./shared/lib/gimp/3.0
-	for plugin in ./plug-ins/*/*; do
-		if file "$plugin" | grep -i 'elf.*executable'; then
-			mv "$plugin" ./shared/bin && ln -s ../../sharun "$plugin"
-			echo "Sharan $plugin"
-		else
-			echo "$plugin is not a binary, skipping..."
-		fi
-	done
-)
-ln -s ../../../ ./shared/lib/gimp/3.0/shared/lib
+bins_to_find="$(find ./shared/lib/gimp/3.0 -exec file {} \; | grep -i 'elf.*executable' | awk -F':' '{print $1}')"
+for plugin in $bins_to_find; do
+	mv -v "$plugin" ./shared/bin && ln -sfr ./sharun "$plugin"
+	echo "Sharan $plugin"
+done
+
+# FIXME we should avoid this because it results in a need to change the current workign dir
+# For some reason setting BABL_PATH and GEGL_PATH causes a ton of errors to show up
+# Lets use the good old binary patching
+sed -i 's|/usr/lib|././/lib|' ./shared/lib/libbabl* ./shared/lib/libgegl*
 
 # PREPARE SHARUN
-echo 'GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
+echo 'SHARUN_WORKING_DIR=${SHARUN_DIR}
+GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
 GIMP3_SYSCONFDIR=${SHARUN_DIR}/etc/gimp/3.0
 GIMP3_LOCALEDIR=${SHARUN_DIR}/share/locale
-GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0' > ./.env
+GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0
+unset BABL_PATH
+unset GEGL_PATH' > ./.env
 
 ln ./sharun ./AppRun
 ./sharun -g
@@ -94,18 +96,18 @@ cd ..
 wget -q "$URUNTIME" -O ./uruntime
 chmod +x ./uruntime
 
+# Keep the mount point (speeds up launch time)
+sed -i 's|URUNTIME_MOUNT=[0-9]|URUNTIME_MOUNT=0|' ./uruntime
+
 #Add udpate info to runtime
 echo "Adding update information \"$UPINFO\" to runtime..."
-printf "$UPINFO" > data.upd_info
-llvm-objcopy --update-section=.upd_info=data.upd_info \
-	--set-section-flags=.upd_info=noload,readonly ./uruntime
-printf 'AI\x02' | dd of=./uruntime bs=1 count=3 seek=8 conv=notrunc
+./uruntime --appimage-addupdinfo "$UPINFO"
 
 echo "Generating AppImage..."
 ./uruntime --appimage-mkdwarfs -f \
 	--set-owner 0 --set-group 0 \
 	--no-history --no-create-timestamp \
-	--compression zstd:level=22 -S25 -B16 \
+	--compression zstd:level=22 -S23 -B32 \
 	--header uruntime \
 	-i ./AppDir -o "$PACKAGE"-"$VERSION"-"$ARCH".AppImage
 
