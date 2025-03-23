@@ -36,7 +36,7 @@ ln -s ./"$ICON"    ./.DirIcon
 # ADD LIBRARIES
 wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
-./lib4bin -p -v -k -r \
+./lib4bin -p -v -k -s \
 	/usr/bin/gimp* \
 	/usr/lib/libgimp* \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
@@ -67,19 +67,17 @@ cp -rvn /usr/lib/gimp    ./shared/lib
 
 # sharun the gimp plugins
 echo "Sharunning the gimp plugins..."
-mkdir -p ./shared/lib/gimp/3.0/shared/bin
-cp ./sharun ./shared/lib/gimp/3.0
 ( cd ./shared/lib/gimp/3.0
 	for plugin in ./plug-ins/*/*; do
 		if file "$plugin" | grep -i 'elf.*executable'; then
-			mv "$plugin" ./shared/bin && ln -s ../../sharun "$plugin"
+			mv "$plugin" ../../../bin \
+				&& ln -s ../../../../../../sharun  "$plugin"
 			echo "Sharan $plugin"
 		else
 			echo "$plugin is not a binary, skipping..."
 		fi
 	done
 )
-ln -s ../../../ ./shared/lib/gimp/3.0/shared/lib
 
 # PREPARE SHARUN
 echo 'GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
