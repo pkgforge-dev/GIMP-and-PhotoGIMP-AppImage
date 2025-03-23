@@ -19,7 +19,7 @@ jobs:
       if: always()
       run: |
         sed -i 's/DownloadUser/#DownloadUser/g' /etc/pacman.conf
-        pacman -Syu --noconfirm base-devel curl desktop-file-utils git wget libheif alsa-lib \
+        pacman -Syu --noconfirm base-devel curl desktop-file-utils git wget libheif alsa-lib gvfs \
           base-devel patchelf gtk3 strace gimp ffmpeg ghostscript llvm xorg-server-xvfb librsvg
 
         # Artix repos don't have zsyc
