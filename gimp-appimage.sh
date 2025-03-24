@@ -22,8 +22,9 @@ cd ./AppDir
 # ADD LIBRARIES
 wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
-xvfb-run -a -- ./lib4bin -p -v -k -s -e \
-	/usr/bin/gimp-3.0 \
+xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
+	--python-pkg PyGObject \
+	/usr/bin/gimp* \
 	/usr/lib/libgimp* \
 	/usr/lib/gimp/*/modules/* \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
@@ -35,30 +36,24 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e \
 	/usr/lib/libcfitsio.so* \
 	/usr/lib/libgthread-2.0.so* \
 	/usr/lib/libheif/* \
-	/usr/lib/libaa* \
-	/usr/lib/libasound.so* \
-	/usr/lib/libmng* \
-	/usr/lib/libgs* \
-	/usr/lib/libslang* \
-	/usr/lib/libijs* \
-	/usr/lib/libijs* \
 	/usr/lib/libjbig2dec* \
 	/usr/lib/libgpm* \
-	/usr/lib/libidn* \
 	/usr/lib/libpaper* \
 	/usr/lib/libSDL* \
 	/usr/lib/libXpm.so* \
 	/usr/lib/libheif.so* \
 	/usr/lib/libwmf* \
-	/usr/lib/libudev.so* \
-	/usr/lib/libdl.so.2
-./lib4bin -p -v -k /usr/bin/gimp*
+	/usr/lib/libudev.so*
 
+#cp -vrn /usr/lib/python3*   ./shared/lib
 cp -vr /usr/share/gimp      ./share
 cp -vr /usr/share/locale    ./share
 cp -vr /usr/lib/locale      ./shared/lib
 cp -vr /usr/share/pixmaps   ./share
 cp -vr /etc/gimp            ./etc
+
+cp -vr /usr/share/vala      ./share
+cp -vr /usr/share/gir-1.0   ./share
 
 cp /usr/share/applications/"$DESKTOP"             ./
 cp /usr/share/icons/hicolor/256x256/apps/"$ICON"  ./
