@@ -23,6 +23,7 @@ cd ./AppDir
 wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
 xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
+	--python-pkg PyGObject \
 	/usr/bin/gimp-3.0 \
 	/usr/lib/libgimp* \
 	/usr/lib/gimp/*/modules/* \
