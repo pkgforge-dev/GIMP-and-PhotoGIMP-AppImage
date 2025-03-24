@@ -51,6 +51,9 @@ cp -vr /usr/lib/locale      ./shared/lib
 cp -vr /usr/share/pixmaps   ./share
 cp -vr /etc/gimp            ./etc
 
+cp -vr /usr/share/vala      ./share
+cp -vr /usr/share/gir-1.0   ./share
+
 cp /usr/share/applications/"$DESKTOP"             ./
 cp /usr/share/icons/hicolor/256x256/apps/"$ICON"  ./
 ln -s ./"$ICON"    ./.DirIcon
