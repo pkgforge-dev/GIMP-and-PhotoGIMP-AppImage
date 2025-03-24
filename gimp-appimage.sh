@@ -45,6 +45,9 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	/usr/lib/libwmf* \
 	/usr/lib/libudev.so*
 
+# FIXME sharun will fix this soon 
+ln -s ./python ./shared/bin/python3 || true
+
 cp -vr /usr/share/gimp      ./share
 cp -vr /usr/share/locale    ./share
 cp -vr /usr/lib/locale      ./shared/lib
