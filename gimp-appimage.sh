@@ -108,7 +108,7 @@ echo "Generating AppImage..."
 ./uruntime --appimage-mkdwarfs -f \
 	--set-owner 0 --set-group 0 \
 	--no-history --no-create-timestamp \
-	--compression zstd:level=22 -S23 -B32 \
+	--compression zstd:level=22 -S24 -B32 \
 	--header uruntime \
 	-i ./AppDir -o "$PACKAGE"-"$VERSION"-"$ARCH".AppImage
 
