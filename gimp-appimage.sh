@@ -48,7 +48,7 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 # FIXME sharun will fix this soon 
 ln -s ./python ./shared/bin/python3 || true
 
-cp -vrn /usr/lib/python3*   ./shared/lib
+#cp -vrn /usr/lib/python3*   ./shared/lib
 cp -vr /usr/share/gimp      ./share
 cp -vr /usr/share/locale    ./share
 cp -vr /usr/lib/locale      ./shared/lib
