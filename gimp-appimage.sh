@@ -16,25 +16,14 @@ LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bi
 URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
 
 # Prepare AppDir
-mkdir -p ./AppDir/shared/lib ./AppDir/share ./AppDir/etc
+mkdir -p ./AppDir/etc
 cd ./AppDir
-
-cp -vr /usr/share/gimp      ./share
-cp -vr /usr/share/locale    ./share
-cp -vr /usr/lib/locale      ./shared/lib
-cp -vr /usr/share/pixmaps   ./share
-cp -vr /etc/gimp            ./etc
-
-cp /usr/share/applications/"$DESKTOP"             ./
-cp /usr/share/icons/hicolor/256x256/apps/"$ICON"  ./
-ln -s ./"$ICON"    ./.DirIcon
-ln -s ./           ./usr
 
 # ADD LIBRARIES
 wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
-./lib4bin -p -v -k -s \
-	/usr/bin/gimp* \
+xvfb-run -a -- ./lib4bin -p -v -k -s -e \
+	/usr/bin/gimp-3.0 \
 	/usr/lib/libgimp* \
 	/usr/lib/gimp/*/modules/* \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
@@ -43,6 +32,7 @@ chmod +x ./lib4bin
 	/usr/lib/babl-*/* \
 	/usr/lib/gegl-*/* \
 	/usr/lib/gvfs/* \
+	/usr/lib/libcfitsio.so* \
 	/usr/lib/libgthread-2.0.so* \
 	/usr/lib/libheif/* \
 	/usr/lib/libaa* \
@@ -62,34 +52,45 @@ chmod +x ./lib4bin
 	/usr/lib/libwmf* \
 	/usr/lib/libudev.so* \
 	/usr/lib/libdl.so.2
+./lib4bin -p -v -k /usr/bin/gimp*
+
+cp -vr /usr/share/gimp      ./share
+cp -vr /usr/share/locale    ./share
+cp -vr /usr/lib/locale      ./shared/lib
+cp -vr /usr/share/pixmaps   ./share
+cp -vr /etc/gimp            ./etc
+
+cp /usr/share/applications/"$DESKTOP"             ./
+cp /usr/share/icons/hicolor/256x256/apps/"$ICON"  ./
+ln -s ./"$ICON"    ./.DirIcon
+ln -s ./           ./usr
 
 cp -vn /usr/lib/gegl-*/*.json ./shared/lib/gegl-*
 cp -rvn /usr/lib/gimp         ./shared/lib
 
 # sharun the gimp plugins
 echo "Sharunning the gimp plugins..."
-bins_to_find="$(find ./shared/lib/gimp/3.0 -exec file {} \; | grep -i 'elf.*executable' | awk -F':' '{print $1}')"
+bins_to_find="$(find ./shared/lib/gimp -exec file {} \; | grep -i 'elf.*executable' | awk -F':' '{print $1}')"
 for plugin in $bins_to_find; do
 	mv -v "$plugin" ./shared/bin && ln -sfr ./sharun "$plugin"
 	echo "Sharan $plugin"
 done
-
-# FIXME we should avoid this because it results in a need to change the current workign dir
-# For some reason setting BABL_PATH and GEGL_PATH causes a ton of errors to show up
-# Lets use the good old binary patching
-sed -i 's|/usr/lib|././/lib|' ./shared/lib/libbabl* ./shared/lib/libgegl*
 
 # PREPARE SHARUN
 echo 'SHARUN_WORKING_DIR=${SHARUN_DIR}
 GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
 GIMP3_SYSCONFDIR=${SHARUN_DIR}/etc/gimp/3.0
 GIMP3_LOCALEDIR=${SHARUN_DIR}/share/locale
-GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0
-unset BABL_PATH
-unset GEGL_PATH' > ./.env
+GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0' > ./.env
 
 ln ./sharun ./AppRun
 ./sharun -g
+
+# FIXME we should avoid this because it results in a need to change the current workign dir
+# For some reason setting BABL_PATH and GEGL_PATH causes a ton of errors to show up
+# Lets use the good old binary patching
+sed -i 's|/usr/lib|././/lib|' ./shared/lib/libbabl* ./shared/lib/libgegl*
+echo 'unset BABL_PATH GEGL_PATH' >> ./.env
 
 # MAKE APPIMAGE WITH URUNTIME
 cd ..
@@ -107,7 +108,7 @@ echo "Generating AppImage..."
 ./uruntime --appimage-mkdwarfs -f \
 	--set-owner 0 --set-group 0 \
 	--no-history --no-create-timestamp \
-	--compression zstd:level=22 -S23 -B32 \
+	--compression zstd:level=22 -S24 -B32 \
 	--header uruntime \
 	-i ./AppDir -o "$PACKAGE"-"$VERSION"-"$ARCH".AppImage
 
