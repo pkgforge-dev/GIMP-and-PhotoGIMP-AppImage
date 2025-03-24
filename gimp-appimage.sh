@@ -22,8 +22,8 @@ cd ./AppDir
 # ADD LIBRARIES
 wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
-xvfb-run -a -- ./lib4bin -p -v -k -s -e \
-	/usr/bin/gimp-3.0 \
+./lib4bin -p -v -k -s \
+	/usr/bin/gimp* \
 	/usr/lib/libgimp* \
 	/usr/lib/gimp/*/modules/* \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
@@ -52,7 +52,6 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e \
 	/usr/lib/libwmf* \
 	/usr/lib/libudev.so* \
 	/usr/lib/libdl.so.2
-./lib4bin -p -v -k /usr/bin/gimp*
 
 cp -vr /usr/share/gimp      ./share
 cp -vr /usr/share/locale    ./share
