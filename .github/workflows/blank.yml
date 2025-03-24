@@ -27,6 +27,7 @@ jobs:
         pacman -U --noconfirm ./llvm-libs.pkg.tar.zst
 
     - name: Make AppImage
+      run: |
         chmod +x ./*-appimage.sh && ./*-appimage.sh
         mkdir dist
         mv *.AppImage* dist/
