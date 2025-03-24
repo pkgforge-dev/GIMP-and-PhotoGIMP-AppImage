@@ -11,21 +11,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    container: artixlinux/artixlinux:latest
+    container: ghcr.io/pkgforge-dev/archlinux:latest
     steps:
     - uses: actions/checkout@v4
 
-    - name: build
+    - name: Install dependencies
       if: always()
       run: |
         sed -i 's/DownloadUser/#DownloadUser/g' /etc/pacman.conf
         pacman -Syu --noconfirm base-devel curl desktop-file-utils git wget libheif alsa-lib gvfs \
-          base-devel patchelf gtk3 strace gimp ffmpeg ghostscript llvm xorg-server-xvfb librsvg cfitsio
+          base-devel patchelf gtk3 strace gimp ffmpeg ghostscript llvm xorg-server-xvfb librsvg cfitsio zsync
 
-        # Artix repos don't have zsyc
-        wget https://london.mirror.pkgbuild.com/extra/os/x86_64/zsync-0.6.2-5-x86_64.pkg.tar.zst
-        pacman -U --noconfirm ./zsync-0.6.2-5-x86_64.pkg.tar.zst
+        LLVM="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/llvm-libs-nano-x86_64.pkg.tar.zst"
+        wget "$LLVM" -O ./llvm-libs.pkg.tar.zst
+        pacman -U --noconfirm ./llvm-libs.pkg.tar.zst
 
+    - name: Make AppImage
         chmod +x ./*-appimage.sh && ./*-appimage.sh
         mkdir dist
         mv *.AppImage* dist/
@@ -35,6 +36,7 @@ jobs:
       with:
         name: AppImage
         path: 'dist'
+
 
   release:
       needs: [build]
