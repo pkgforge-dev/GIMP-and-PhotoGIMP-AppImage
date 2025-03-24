@@ -24,7 +24,7 @@ wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
 xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	--python-pkg PyGObject \
-	/usr/bin/gimp-3.0 \
+	/usr/bin/gimp* \
 	/usr/lib/libgimp* \
 	/usr/lib/gimp/*/modules/* \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
@@ -36,24 +36,14 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	/usr/lib/libcfitsio.so* \
 	/usr/lib/libgthread-2.0.so* \
 	/usr/lib/libheif/* \
-	/usr/lib/libaa* \
-	/usr/lib/libasound.so* \
-	/usr/lib/libmng* \
-	/usr/lib/libgs* \
-	/usr/lib/libslang* \
-	/usr/lib/libijs* \
-	/usr/lib/libijs* \
 	/usr/lib/libjbig2dec* \
 	/usr/lib/libgpm* \
-	/usr/lib/libidn* \
 	/usr/lib/libpaper* \
 	/usr/lib/libSDL* \
 	/usr/lib/libXpm.so* \
 	/usr/lib/libheif.so* \
 	/usr/lib/libwmf* \
-	/usr/lib/libudev.so* \
-	/usr/lib/libdl.so.2
-./lib4bin -p -v -k /usr/bin/gimp*
+	/usr/lib/libudev.so*
 
 cp -vr /usr/share/gimp      ./share
 cp -vr /usr/share/locale    ./share
