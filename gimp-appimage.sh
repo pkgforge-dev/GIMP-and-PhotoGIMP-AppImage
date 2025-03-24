@@ -22,7 +22,7 @@ cd ./AppDir
 # ADD LIBRARIES
 wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
-xvfb-run -a -- ./lib4bin -p -v -k -s -e \
+xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	/usr/bin/gimp-3.0 \
 	/usr/lib/libgimp* \
 	/usr/lib/gimp/*/modules/* \
