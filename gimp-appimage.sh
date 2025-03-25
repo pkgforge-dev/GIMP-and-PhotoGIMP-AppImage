@@ -77,7 +77,7 @@ GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0' > ./.env
 # So we will use ld-preload-open to fix this issue
 
 # change the name of the path to avoid overwritting all other libs from accessing /usr/share/icons
-find ./lib -type f -name 'libgimpwidgets*' -exec sed -i 's|/usr/share/icons|/usr/share/XXXXX|' {} \;
+find ./lib -type f -name 'libgimpwidgets*' -exec sed -i 's|/usr/share/icons|/usr/share/XXXXX|g' {} \;
 
 # Now get ld-preload-open
 git clone https://github.com/fritzw/ld-preload-open.git && (
