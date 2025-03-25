@@ -4,7 +4,7 @@ set -eu
 
 export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
-export VERSION="$(pacman -Q $PACKAGE | awk 'NR==1 {print $2; exit}')"
+export VERSION="$(pacman -Q gimp | awk 'NR==1 {print $2; exit}')"
 export STRACE_TIME=20
 
 UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|continuous|*$ARCH.AppImage.zsync"
