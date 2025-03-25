@@ -43,7 +43,9 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	/usr/lib/libXpm.so* \
 	/usr/lib/libheif.so* \
 	/usr/lib/libwmf* \
-	/usr/lib/libudev.so*
+	/usr/lib/libudev.so* \
+	/usr/lib/libaa.so* \
+	/usr/lib/libmng.so* 
 
 cp -vr /usr/share/gimp           ./share
 cp -vr /usr/share/locale         ./share
