@@ -19,7 +19,7 @@ jobs:
       if: always()
       run: |
         sed -i 's/DownloadUser/#DownloadUser/g' /etc/pacman.conf
-        pacman -Syu --noconfirm base-devel curl desktop-file-utils git wget libheif alsa-lib gvfs \
+        pacman -Syu --noconfirm base-devel curl desktop-file-utils git wget libheif alsa-lib gvfs aalib libmng \
           base-devel patchelf gtk3 strace gimp ffmpeg ghostscript llvm xorg-server-xvfb librsvg cfitsio zsync
 
         LLVM="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/llvm-libs-nano-x86_64.pkg.tar.zst"
