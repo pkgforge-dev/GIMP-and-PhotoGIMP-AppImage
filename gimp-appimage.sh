@@ -68,7 +68,7 @@ done
 # FIXME For some reason libgimpwidgets is hardcoded to looks  for /usr/share and doesn't check XDG_DATA_DIRS
 # So we will fix it with binary patching because ld-preload-open did not work as libgimpwidgets 
 # uses the openat function which ld-preload-open doesn't work with 😭
-find ./lib -type f -name 'libgimpwidgets*' -exec sed -i 's|/usr/share/icons|././/share/icons|g' {} \;
+find ./lib -type f -name 'libgimpwidgets*' -exec sed -i 's|/usr/share|././/share|g' {} \;
 
 # PREPARE SHARUN
 echo 'SHARUN_WORKING_DIR=${SHARUN_DIR}
