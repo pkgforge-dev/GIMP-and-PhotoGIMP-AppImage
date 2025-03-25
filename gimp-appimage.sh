@@ -6,7 +6,6 @@ export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
 export VERSION="$(pacman -Q gimp | awk 'NR==1 {print $2; exit}')"
 export STRACE_TIME=20
-
 UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|continuous|*$ARCH.AppImage.zsync"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
 URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
@@ -66,29 +65,17 @@ for plugin in $bins_to_find; do
 	echo "Sharan $plugin"
 done
 
+# FIXME For some reason libgimpwidgets is hardcoded to looks  for /usr/share and doesn't check XDG_DATA_DIRS
+# So we will fix it with binary patching because ld-preload-open did not work as libgimpwidgets 
+# uses the openat function which ld-preload-open doesn't work with 😭
+find ./lib -type f -name 'libgimpwidgets*' -exec sed -i 's|/usr/share/icons|././/share/icons|g' {} \;
+
 # PREPARE SHARUN
-echo 'GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
+echo 'SHARUN_WORKING_DIR=${SHARUN_DIR}
+GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
 GIMP3_SYSCONFDIR=${SHARUN_DIR}/etc/gimp/3.0
 GIMP3_LOCALEDIR=${SHARUN_DIR}/share/locale
 GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0' > ./.env
-
-# For some reason libgimpwidgets is hardcoded to looks  for /usr/share and doesn't check XDG_DATA_DIRS
-# So we will use ld-preload-open to fix this issue
-
-# change the name of the path to avoid overwritting all other libs from accessing /usr/share/icons
-find ./lib -type f -name 'libgimpwidgets*' -exec sed -i 's|/usr/share/icons|/usr/share/XXXXX|g' {} \;
-
-# Now get ld-preload-open
-git clone https://github.com/fritzw/ld-preload-open.git && (
-	cd ./ld-preload-open
-	make all
-	mv ./path-mapping.so ../
-)
-rm -rf ld-preload-open
-mv ./path-mapping.so ./lib
-
-echo 'PATH_MAPPING=/usr/share/XXXXX:${SHARUN_DIR}/share/icons' >> ./.env
-echo 'path-mapping.so' > ./.preload
 
 ln ./sharun ./AppRun
 ./sharun -g
