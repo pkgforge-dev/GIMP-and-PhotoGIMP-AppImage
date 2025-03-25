@@ -16,7 +16,7 @@ LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bi
 URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
 
 # Prepare AppDir
-mkdir -p ./AppDir/etc
+mkdir -p ./AppDir/etc ./AppDir/share/icons
 cd ./AppDir
 
 # ADD LIBRARIES
@@ -45,15 +45,14 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	/usr/lib/libwmf* \
 	/usr/lib/libudev.so*
 
-#cp -vrn /usr/lib/python3*   ./shared/lib
-cp -vr /usr/share/gimp      ./share
-cp -vr /usr/share/locale    ./share
-cp -vr /usr/lib/locale      ./shared/lib
-cp -vr /usr/share/pixmaps   ./share
-cp -vr /etc/gimp            ./etc
-
-cp -vr /usr/share/vala      ./share
-cp -vr /usr/share/gir-1.0   ./share
+cp -vr /usr/share/gimp           ./share
+cp -vr /usr/share/locale         ./share
+cp -vr /usr/lib/locale           ./shared/lib
+cp -vr /usr/share/pixmaps        ./share
+cp -vr /usr/share/icons/hicolor  ./share/icons
+cp -vr /etc/gimp                 ./etc
+cp -vr /usr/share/vala           ./share
+cp -vr /usr/share/gir-1.0        ./share
 
 cp /usr/share/applications/"$DESKTOP"             ./
 cp /usr/share/icons/hicolor/256x256/apps/"$ICON"  ./
