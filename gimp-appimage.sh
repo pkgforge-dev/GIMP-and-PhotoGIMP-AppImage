@@ -67,8 +67,7 @@ for plugin in $bins_to_find; do
 done
 
 # PREPARE SHARUN
-echo 'SHARUN_WORKING_DIR=${SHARUN_DIR}
-GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
+echo 'GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
 GIMP3_SYSCONFDIR=${SHARUN_DIR}/etc/gimp/3.0
 GIMP3_LOCALEDIR=${SHARUN_DIR}/share/locale
 GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0' > ./.env
