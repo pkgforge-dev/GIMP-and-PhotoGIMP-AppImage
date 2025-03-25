@@ -9,7 +9,7 @@ ICON=gimp.png
 export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
 export VERSION="$(pacman -Q $PACKAGE | awk 'NR==1 {print $2; exit}')"
-export STRACE_TIME=15
+export STRACE_TIME=20
 
 UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|continuous|*$ARCH.AppImage.zsync"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
@@ -81,12 +81,6 @@ GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0' > ./.env
 
 ln ./sharun ./AppRun
 ./sharun -g
-
-# FIXME we should avoid this because it results in a need to change the current workign dir
-# For some reason setting BABL_PATH and GEGL_PATH causes a ton of errors to show up
-# Lets use the good old binary patching
-sed -i 's|/usr/lib|././/lib|' ./shared/lib/libbabl* ./shared/lib/libgegl*
-echo 'unset BABL_PATH GEGL_PATH' >> ./.env
 
 # MAKE APPIMAGE WITH URUNTIME
 cd ..
