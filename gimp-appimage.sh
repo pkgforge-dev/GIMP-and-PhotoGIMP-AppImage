@@ -59,7 +59,7 @@ cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./.DirIcon
 
 # sharun the gimp plugins
 echo "Sharunning the gimp plugins..."
-bins_to_find="$(find ./shared/lib/gimp -exec file {} \; | grep -i 'elf.*executable' | awk -F':' '{print $1}')"
+bins_to_find="$(find ./lib/gimp -exec file {} \; | grep -i 'elf.*executable' | awk -F':' '{print $1}')"
 for plugin in $bins_to_find; do
 	mv -v "$plugin" ./shared/bin && ln -sfr ./sharun "$plugin"
 	echo "Sharan $plugin"
