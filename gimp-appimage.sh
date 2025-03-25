@@ -2,10 +2,6 @@
 
 set -eu
 
-PACKAGE=gimp
-DESKTOP=gimp.desktop
-ICON=gimp.png
-
 export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
 export VERSION="$(pacman -Q $PACKAGE | awk 'NR==1 {print $2; exit}')"
@@ -55,14 +51,12 @@ cp -vr /usr/share/icons/hicolor  ./share/icons
 cp -vr /etc/gimp                 ./etc
 cp -vr /usr/share/vala           ./share
 cp -vr /usr/share/gir-1.0        ./share
+cp -vn /usr/lib/gegl-*/*.json    ./shared/lib/gegl-*
+cp -rvn /usr/lib/gimp            ./shared/lib
 
-cp /usr/share/applications/"$DESKTOP"             ./
-cp /usr/share/icons/hicolor/256x256/apps/"$ICON"  ./
-ln -s ./"$ICON"    ./.DirIcon
-ln -s ./           ./usr
-
-cp -vn /usr/lib/gegl-*/*.json ./shared/lib/gegl-*
-cp -rvn /usr/lib/gimp         ./shared/lib
+cp /usr/share/applications/gimp.desktop            ./
+cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./
+cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./.DirIcon
 
 # sharun the gimp plugins
 echo "Sharunning the gimp plugins..."
@@ -78,6 +72,24 @@ GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
 GIMP3_SYSCONFDIR=${SHARUN_DIR}/etc/gimp/3.0
 GIMP3_LOCALEDIR=${SHARUN_DIR}/share/locale
 GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0' > ./.env
+
+# For some reason libgimpwidgets is hardcoded to looks  for /usr/share and doesn't check XDG_DATA_DIRS
+# So we will use ld-preload-open to fix this issue
+
+# change the name of the path to avoid overwritting all other libs from accessing /usr/share/icons
+find ./lib -type f -name 'libgimpwidgets*' -exec sed -i 's|/usr/share/icons|/usr/share/XXXXX|' {} \;
+
+# Now get ld-preload-open
+git clone https://github.com/fritzw/ld-preload-open.git && (
+	cd ./ld-preload-open
+	make all
+	mv ./path-mapping.so ../
+)
+rm -rf ld-preload-open
+mv ./path-mapping.so ./lib
+
+echo 'PATH_MAPPING=/usr/share/XXXXX:${SHARUN_DIR}/share/icons' >> ./.env
+echo 'path-mapping.so' > ./.preload
 
 ln ./sharun ./AppRun
 ./sharun -g
@@ -98,9 +110,9 @@ echo "Generating AppImage..."
 ./uruntime --appimage-mkdwarfs -f \
 	--set-owner 0 --set-group 0 \
 	--no-history --no-create-timestamp \
-	--compression zstd:level=22 -S24 -B32 \
+	--compression zstd:level=22 -S23 -B32 \
 	--header uruntime \
-	-i ./AppDir -o "$PACKAGE"-"$VERSION"-"$ARCH".AppImage
+	-i ./AppDir -o ./GIMP-"$VERSION"-"$ARCH".AppImage
 
 echo "Generating zsync file..."
 zsyncmake *.AppImage -u *.AppImage
