@@ -20,6 +20,7 @@ chmod +x ./lib4bin
 xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	--python-pkg PyGObject \
 	/usr/bin/gimp* \
+	/usr/bin/gjs \
 	/usr/lib/libgimp* \
 	/usr/lib/gimp/*/modules/* \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
