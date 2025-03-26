@@ -46,6 +46,7 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 
 cp -vr /usr/share/gimp           ./share
 cp -vr /usr/share/locale         ./share
+find ./share/locale ! -name '*glib*' ! -name '*gimp*' ! -name '*gegl*' -delete
 cp -vr /usr/lib/locale           ./shared/lib
 cp -vr /usr/share/pixmaps        ./share
 cp -vr /usr/share/icons/hicolor  ./share/icons
