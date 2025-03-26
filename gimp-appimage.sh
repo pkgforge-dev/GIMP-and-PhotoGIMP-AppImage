@@ -42,7 +42,7 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	/usr/lib/libwmf* \
 	/usr/lib/libudev.so* \
 	/usr/lib/libaa.so* \
-	/usr/lib/libmng.so* 
+	/usr/lib/libmng.so*
 
 cp -vr /usr/share/gimp           ./share
 cp -vr /usr/share/locale         ./share
@@ -67,19 +67,19 @@ for plugin in $bins_to_find; do
 	echo "Sharan $plugin"
 done
 
-# FIXME For some reason libgimpwidgets is hardcoded to looks  for /usr/share and doesn't check XDG_DATA_DIRS
-# So we will fix it with binary patching because ld-preload-open did not work as libgimpwidgets 
-# uses the openat function which ld-preload-open doesn't work with 😭
-find ./lib -type f -name 'libgimpwidgets*' -exec sed -i 's|/usr|././|g' {} \;
+# HACK
+find ./lib -type f -name 'libgimpwidgets*' -exec sed -i 's|/usr/share|/tmp/xdg69|g' {} \;
 
 # PREPARE SHARUN
-echo 'SHARUN_WORKING_DIR=${SHARUN_DIR}
-GIMP3_DATADIR=${SHARUN_DIR}/share/gimp/3.0
-GIMP3_SYSCONFDIR=${SHARUN_DIR}/etc/gimp/3.0
-GIMP3_LOCALEDIR=${SHARUN_DIR}/share/locale
-GIMP3_PLUGINDIR=${SHARUN_DIR}/shared/lib/gimp/3.0' > ./.env
-
-ln ./sharun ./AppRun
+echo '#!/bin/sh
+CURRENTDIR="$(readlink -f "$(dirname "$0")")"
+export GIMP3_DATADIR="$CURRENTDIR"/share/gimp/3.0
+export GIMP3_SYSCONFDIR="$CURRENTDIR"/etc/gimp/3.0
+export GIMP3_LOCALEDIR="$CURRENTDIR"/share/locale
+export GIMP3_PLUGINDIR="$CURRENTDIR"/shared/lib/gimp/3.0
+[ -d '/tmp/xdg69' ] || cp -r "$CURRENTDIR"/share /tmp/xdg69
+exec "$CURRENTDIR"/bin/gimp' > ./AppRun
+chmod +x ./AppRun
 ./sharun -g
 
 # MAKE APPIMAGE WITH URUNTIME
