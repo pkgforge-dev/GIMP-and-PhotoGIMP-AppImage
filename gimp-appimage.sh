@@ -77,7 +77,7 @@ export GIMP3_DATADIR="$CURRENTDIR"/share/gimp/3.0
 export GIMP3_SYSCONFDIR="$CURRENTDIR"/etc/gimp/3.0
 export GIMP3_LOCALEDIR="$CURRENTDIR"/share/locale
 export GIMP3_PLUGINDIR="$CURRENTDIR"/shared/lib/gimp/3.0
-[ -d '/tmp/xdg69' ] || cp "$CURRENTDIR"/share /tmp/xdg69
+[ -d '/tmp/xdg69' ] || cp -r "$CURRENTDIR"/share /tmp/xdg69
 exec "$CURRENTDIR"/bin/gimp' > ./AppRun
 chmod +x ./AppRun
 ./sharun -g
