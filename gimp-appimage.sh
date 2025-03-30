@@ -113,9 +113,9 @@ wget -qO ./pelf "https://github.com/xplshn/pelf/releases/latest/download/pelf_$A
 chmod +x ./pelf
 echo "Generating [dwfs]AppBundle...(Go runtime)"
 ./pelf --add-appdir ./AppDir \
-	    --appbundle-id="GIMP-$VERSION" \
-     	    --compression "-C zstd:level=22 -S25 -B32" \
-	    --output-to GIMP-$VERSION-anylinux-$ARCH.dwfs.AppBundle"
+	--appbundle-id="GIMP-$VERSION" \
+	--compression "-C zstd:level=22 -S25 -B32" \
+	--output-to GIMP-$VERSION-anylinux-$ARCH.dwfs.AppBundle"
 
 echo "Generating zsync file..."
 zsyncmake *.AppImage -u *.AppImage
