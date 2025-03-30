@@ -60,6 +60,9 @@ cp /usr/share/applications/gimp.desktop            ./
 cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./
 cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./.DirIcon
 
+# Fix wrong window class in .desktop
+sed -i 's|StartupWMClass=.*|StartupWMClass=Gimp|' ./gimp.desktop 
+
 # sharun the gimp plugins
 echo "Sharunning the gimp plugins..."
 bins_to_find="$(find ./lib/gimp -exec file {} \; | grep -i 'elf.*executable' | awk -F':' '{print $1}')"
@@ -106,6 +109,16 @@ echo "Generating AppImage..."
 	--header uruntime \
 	-i ./AppDir -o ./GIMP-"$VERSION"-"$ARCH".AppImage
 
+wget -qO ./pelf "https://github.com/xplshn/pelf/releases/latest/download/pelf_$ARCH" 
+chmod +x ./pelf
+echo "Generating [dwfs]AppBundle...(Go runtime)"
+./pelf --add-appdir ./AppDir \
+	    --appbundle-id="GIMP-$VERSION" \
+     	    --compression "-C zstd:level=22 -S25 -B32" \
+	    --output-to GIMP-$VERSION-anylinux-$ARCH.dwfs.AppBundle"
+
 echo "Generating zsync file..."
 zsyncmake *.AppImage -u *.AppImage
+zsyncmake *.AppBundle -u *.AppBundle
+
 echo "All Done!"
