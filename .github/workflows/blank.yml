@@ -59,4 +59,5 @@ jobs:
             draft: false
             files: |
               *.AppImage*
+              *.AppBundle*
             repo_token: ${{ secrets.GITHUB_TOKEN }}
