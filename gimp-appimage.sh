@@ -107,7 +107,7 @@ echo "Generating AppImage..."
 	--no-history --no-create-timestamp \
 	--compression zstd:level=22 -S25 -B32 \
 	--header uruntime \
-	-i ./AppDir -o ./GIMP-"$VERSION"-"$ARCH".AppImage
+	-i ./AppDir -o ./GIMP-"$VERSION"-anylinux-"$ARCH".AppImage
 
 wget -qO ./pelf "https://github.com/xplshn/pelf/releases/latest/download/pelf_$ARCH" 
 chmod +x ./pelf
