@@ -24,6 +24,8 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	/usr/bin/gegl \
 	/usr/lib/libgimp* \
 	/usr/lib/gimp/*/modules/* \
+	/usr/lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-vala \
+	/usr/lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-c \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
 	/usr/lib/gtk-*/*/*/* \
 	/usr/lib/gio/*/* \
@@ -73,6 +75,23 @@ done
 
 # HACK
 find ./lib -type f -name 'libgimpwidgets*' -exec sed -i 's|/usr/share|/tmp/xdg69|g' {} \;
+
+# HACK2
+rm -f ./lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-c \
+	./lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-vala
+
+echo '#!/bin/sh
+CURRENTDIR="$(readlink -f "$(dirname "$0")")"
+exec "$CURRENTDIR"/../../../../../bin/goat-exercise-c "$@"' \
+	> ./lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-c
+
+echo '#!/bin/sh
+CURRENTDIR="$(readlink -f "$(dirname "$0")")"
+exec "$CURRENTDIR"/../../../../../bin/goat-exercise-vala "$@"' \
+	> ./lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-vala
+
+chmod +x ./lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-c \
+	./lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-vala
 
 # PREPARE SHARUN
 echo '#!/bin/sh
