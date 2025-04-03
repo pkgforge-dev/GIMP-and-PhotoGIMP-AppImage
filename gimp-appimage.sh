@@ -45,6 +45,7 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	/usr/lib/libaa.so* \
 	/usr/lib/libmng.so*
 
+cp -nv /usr/lib/gjs/girepository-1.0/* ./lib/girepository-1.0
 cp -vr /usr/share/gimp           ./share
 cp -vr /usr/share/locale         ./share
 find ./share/locale -type f ! -name '*glib*' ! -name '*gimp*' ! -name '*gegl*' -delete
