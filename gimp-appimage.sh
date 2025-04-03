@@ -24,8 +24,7 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	/usr/bin/gegl \
 	/usr/lib/libgimp* \
 	/usr/lib/gimp/*/modules/* \
-	/usr/lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-vala \
-	/usr/lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-c \
+	/usr/lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-* \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
 	/usr/lib/gtk-*/*/*/* \
 	/usr/lib/gio/*/* \
