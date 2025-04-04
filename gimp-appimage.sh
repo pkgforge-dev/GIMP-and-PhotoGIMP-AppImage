@@ -24,7 +24,6 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	/usr/bin/gegl \
 	/usr/lib/libgimp* \
 	/usr/lib/gimp/*/modules/* \
-	/usr/lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-* \
 	/usr/lib/gdk-pixbuf-*/*/*/* \
 	/usr/lib/gtk-*/*/*/* \
 	/usr/lib/gio/*/* \
@@ -45,7 +44,6 @@ xvfb-run -a -- ./lib4bin -p -v -k -s -e -y \
 	/usr/lib/libaa.so* \
 	/usr/lib/libmng.so*
 
-cp -nv /usr/lib/gjs/girepository-1.0/* ./lib/girepository-1.0
 cp -vr /usr/share/gimp           ./share
 cp -vr /usr/share/locale         ./share
 find ./share/locale -type f ! -name '*glib*' ! -name '*gimp*' ! -name '*gegl*' -delete
@@ -69,29 +67,12 @@ sed -i 's|StartupWMClass=.*|StartupWMClass=Gimp|' ./gimp.desktop
 echo "Sharunning the gimp plugins..."
 bins_to_find="$(find ./lib/gimp -exec file {} \; | grep -i 'elf.*executable' | awk -F':' '{print $1}')"
 for plugin in $bins_to_find; do
-	mv -v "$plugin" ./shared/bin && ln -sfr ./sharun "$plugin"
+	mv -v "$plugin" ./shared/bin && ln ./sharun "$plugin"
 	echo "Sharan $plugin"
 done
 
 # HACK
 find ./lib -type f -name 'libgimpwidgets*' -exec sed -i 's|/usr/share|/tmp/xdg69|g' {} \;
-
-# HACK2
-rm -f ./lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-c \
-	./lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-vala
-
-echo '#!/bin/sh
-CURRENTDIR="$(readlink -f "$(dirname "$0")")"
-exec "$CURRENTDIR"/../../../../../bin/goat-exercise-c "$@"' \
-	> ./lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-c
-
-echo '#!/bin/sh
-CURRENTDIR="$(readlink -f "$(dirname "$0")")"
-exec "$CURRENTDIR"/../../../../../bin/goat-exercise-vala "$@"' \
-	> ./lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-vala
-
-chmod +x ./lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-c \
-	./lib/gimp/3.0/extensions/org.gimp.extension.goat-exercises/goat-exercise-vala
 
 # PREPARE SHARUN
 echo '#!/bin/sh
