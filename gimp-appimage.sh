@@ -74,6 +74,10 @@ done
 # HACK
 find ./lib -type f -name 'libgimpwidgets*' -exec sed -i 's|/usr/share|/tmp/xdg69|g' {} \;
 
+# HACK2
+find ./lib -type f -name 'libgegl*' -exec sed -i 's|/usr/lib|/tmp/o_0|g' {} \;
+echo 'unset GEGL_PATH' > ./.env
+
 # PREPARE SHARUN
 echo '#!/bin/sh
 CURRENTDIR="$(readlink -f "$(dirname "$0")")"
@@ -81,10 +85,10 @@ export GIMP3_DATADIR="$CURRENTDIR"/share/gimp/3.0
 export GIMP3_SYSCONFDIR="$CURRENTDIR"/etc/gimp/3.0
 export GIMP3_LOCALEDIR="$CURRENTDIR"/share/locale
 export GIMP3_PLUGINDIR="$CURRENTDIR"/shared/lib/gimp/3.0
-if [ ! -d '/tmp/xdg69/icons' ]; then
-	mkdir -p '/tmp/xdg69'
-	cp -r "$CURRENTDIR"/share/icons /tmp/xdg69
-fi
+
+ln -sfn "$CURRENTDIR"/share /tmp/xdg69
+ln -sfn "$CURRENTDIR"/lib   /tmp/o_0
+
 exec "$CURRENTDIR"/bin/gimp' > ./AppRun
 chmod +x ./AppRun
 ./sharun -g
