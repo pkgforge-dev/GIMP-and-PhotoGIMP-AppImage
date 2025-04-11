@@ -89,7 +89,7 @@ export GIMP3_PLUGINDIR="$CURRENTDIR"/shared/lib/gimp/3.0
 ln -sfn "$CURRENTDIR"/share /tmp/xdg69
 ln -sfn "$CURRENTDIR"/lib   /tmp/o_0
 
-exec "$CURRENTDIR"/bin/gimp' > ./AppRun
+exec "$CURRENTDIR"/bin/gimp "$@"' > ./AppRun
 chmod +x ./AppRun
 ./sharun -g
 
