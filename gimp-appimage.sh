@@ -60,6 +60,12 @@ cp /usr/share/applications/gimp.desktop            ./
 cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./
 cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./.DirIcon
 
+# backport fix from interstellar
+echo '#!/bin/sh
+shift
+xdg-open "$@"' > ./bin/gio-launch-desktop
+chmod +x ./bin/gio-launch-desktop
+
 # Fix wrong window class in .desktop
 sed -i 's|StartupWMClass=.*|StartupWMClass=Gimp|' ./gimp.desktop 
 
@@ -109,7 +115,7 @@ echo "Generating AppImage..."
 ./uruntime --appimage-mkdwarfs -f \
 	--set-owner 0 --set-group 0 \
 	--no-history --no-create-timestamp \
-	--compression zstd:level=22 -S26 -B32 \
+	--compression zstd:level=22 -S25 -B8 \
 	--header uruntime \
 	-i ./AppDir -o ./GIMP-"$VERSION"-anylinux-"$ARCH".AppImage
 
@@ -118,7 +124,7 @@ chmod +x ./pelf
 echo "Generating [dwfs]AppBundle...(Go runtime)"
 ./pelf --add-appdir ./AppDir \
 	--appbundle-id="GIMP-$VERSION" \
-	--compression "-C zstd:level=22 -S25 -B32" \
+	--compression "-C zstd:level=22 -S25 -B8" \
 	--output-to GIMP-"$VERSION"-anylinux-"$ARCH".dwfs.AppBundle
 
 echo "Generating zsync file..."
