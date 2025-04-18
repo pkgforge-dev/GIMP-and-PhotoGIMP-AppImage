@@ -5,6 +5,7 @@ set -eu
 export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
 export VERSION="$(pacman -Q gimp | awk 'NR==1 {print $2; exit}')"
+echo "$VERSION" > ~/version
 export STRACE_TIME=20
 UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|continuous|*$ARCH.AppImage.zsync"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
@@ -125,7 +126,7 @@ echo "Generating [dwfs]AppBundle...(Go runtime)"
 ./pelf --add-appdir ./AppDir \
 	--appbundle-id="GIMP-$VERSION" \
 	--compression "-C zstd:level=22 -S25 -B8" \
-	--output-to GIMP-"$VERSION"-anylinux-"$ARCH".dwfs.AppBundle
+	--output-to GIMP-"$"-anylinux-"$ARCH".dwfs.AppBundle
 
 echo "Generating zsync file..."
 zsyncmake *.AppImage -u *.AppImage
