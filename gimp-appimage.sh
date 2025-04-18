@@ -117,7 +117,7 @@ echo "Generating AppImage..."
 	--set-owner 0 --set-group 0 \
 	--no-history --no-create-timestamp \
 	--categorize=hotness --hotness-list=gimp.dwfsprof \
-	--compression zstd:level=22 -S26 -B8 \
+	--compression zstd:level=22 -S25 -B8 \
 	--header uruntime \
 	-i ./AppDir -o ./GIMP-"$VERSION"-anylinux-"$ARCH".AppImage
 
