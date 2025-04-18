@@ -10,21 +10,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     container: ghcr.io/pkgforge-dev/archlinux:latest
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install dependencies
+    - name: Get dependencies
       if: always()
-      run: |
-        sed -i 's/DownloadUser/#DownloadUser/g' /etc/pacman.conf
-        pacman -Syu --noconfirm base-devel curl desktop-file-utils git wget libheif alsa-lib gvfs aalib libmng gjs \
-          base-devel patchelf gtk3 strace gimp ffmpeg ghostscript llvm xorg-server-xvfb librsvg cfitsio zsync
-
-        LLVM="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/llvm-libs-nano-x86_64.pkg.tar.zst"
-        wget "$LLVM" -O ./llvm-libs.pkg.tar.zst
-        pacman -U --noconfirm ./llvm-libs.pkg.tar.zst
+      run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
 
     - name: Make AppImage
       run: |
