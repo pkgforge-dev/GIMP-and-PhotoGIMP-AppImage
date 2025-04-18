@@ -127,7 +127,7 @@ echo "Generating [dwfs]AppBundle...(Go runtime)"
 ./pelf --add-appdir ./AppDir \
 	--appbundle-id="GIMP-$VERSION" \
 	--compression "-C zstd:level=22 -S25 -B8" \
-	--output-to GIMP-"$"-anylinux-"$ARCH".dwfs.AppBundle
+	--output-to GIMP-"$VERSION"-anylinux-"$ARCH".dwfs.AppBundle
 
 echo "Generating zsync file..."
 zsyncmake *.AppImage -u *.AppImage
