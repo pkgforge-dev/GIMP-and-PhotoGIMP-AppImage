@@ -100,6 +100,9 @@ exec xdg-open "$@"' > ./bin/xdg-open
 ln -s ./xdg-open ./bin/gio-launch-desktop
 chmod +x ./bin/xdg-open
 
+#remove fullpath from gio libs
+sed -i 's|/usr/lib/gio-launch-desktop|/kek/lib/gio-launch-desktop|g' ./shared/lib/libgio-*.so*
+
 # Fix wrong window class in .desktop
 sed -i 's|StartupWMClass=.*|StartupWMClass=Gimp|' ./gimp.desktop 
 
