@@ -63,6 +63,8 @@ cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./.DirIcon
 
 # backport fix from interstellar
 echo '#!/bin/sh
+unset GDK_PIXBUF_MODULEDIR GDK_PIXBUF_MODULE_FILE GSETTINGS_SCHEMA_DIR \
+	GIO_MODULE_DIR GTK_IM_MODULE_FILE GTK_PATH GTK_EXE_PREFIX GTK_DATA_PREFIX
 shift
 xdg-open "$@"' > ./bin/gio-launch-desktop
 chmod +x ./bin/gio-launch-desktop
