@@ -63,11 +63,42 @@ cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./.DirIcon
 
 # backport fix from interstellar
 echo '#!/bin/sh
-unset GDK_PIXBUF_MODULEDIR GDK_PIXBUF_MODULE_FILE GSETTINGS_SCHEMA_DIR \
-	GIO_MODULE_DIR GTK_IM_MODULE_FILE GTK_PATH GTK_EXE_PREFIX GTK_DATA_PREFIX
-shift
-xdg-open "$@"' > ./bin/gio-launch-desktop
-chmod +x ./bin/gio-launch-desktop
+# xdg-open wrapper for sharun, unsets env variables likely to cause issues
+CURRENTDIR="$(readlink -f "$(dirname "$0")")"
+PATH="$(echo "$PATH" | sed "s|$CURRENTDIR:||g")"
+export PATH
+
+[ "$(basename $0)" = "gio-launch-desktop" ] && shift
+unset BABL_PATH \
+	GBM_BACKENDS_PATH \
+	GCONV_PATH \
+	GDK_PIXBUF_MODULEDIR \
+	GDK_PIXBUF_MODULE_FILE \
+	GEGL_PATH \
+	GIO_MODULE_DIR \
+	GI_TYPELIB_PATH \
+	GSETTINGS_SCHEMA_DIR \
+	GST_PLUGIN_PATH \
+	GST_PLUGIN_SCANNER \
+	GST_PLUGIN_SYSTEM_PATH \
+	GST_PLUGIN_SYSTEM_PATH_1_0 \
+	GTK_DATA_PREFIX \
+	GTK_EXE_PREFIX \
+	GTK_IM_MODULE_FILE \
+	GTK_PATH \
+	LIBDECOR_PLUGIN_DIR \
+	LIBGL_DRIVERS_PATH \
+	PERLLIB \
+	PIPEWIRE_MODULE_DIR \
+	QT_PLUGIN_PATH \
+	SPA_PLUGIN_DIR \
+	TCL_LIBRARY \
+	TK_LIBRARY \
+	XTABLES_LIBDIR
+
+exec xdg-open "$@"' > ./bin/xdg-open
+ln -s ./xdg-open ./bin/gio-launch-desktop
+chmod +x ./bin/xdg-open
 
 # Fix wrong window class in .desktop
 sed -i 's|StartupWMClass=.*|StartupWMClass=Gimp|' ./gimp.desktop 
