@@ -134,7 +134,7 @@ if [ "$ENABLE_PHOTO_GIMP" = 1 ]; then
 		cp -rv "$CURRENTDIR"/PhotoGIMP/.config/GIMP    "$CONFIGDIR"/PhotoGIMP
 		cp -rvn "$CURRENTDIR"/PhotoGIMP/.local/share/* "$DATADIR"
 	fi
-	export GIMP3_DIRECTORY="$CONFIGDIR"/PhotoGIMP
+	export GIMP3_DIRECTORY="$CONFIGDIR"/PhotoGIMP/3.0
 fi
 
 exec "$CURRENTDIR"/bin/gimp "$@"' > ./AppRun
