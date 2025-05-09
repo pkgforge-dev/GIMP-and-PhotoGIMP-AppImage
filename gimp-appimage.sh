@@ -10,6 +10,7 @@ export STRACE_TIME=20
 UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|continuous|*$ARCH.AppImage.zsync"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
 URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
+PHOTOGIMP="https://github.com/Diolinux/PhotoGIMP/releases/latest/download/PhotoGIMP-linux.zip"
 
 # Prepare AppDir
 mkdir -p ./AppDir/etc ./AppDir/share/icons
@@ -117,6 +118,8 @@ echo 'unset GEGL_PATH' > ./.env
 # PREPARE SHARUN
 echo '#!/bin/sh
 CURRENTDIR="$(readlink -f "$(dirname "$0")")"
+CONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}"
+DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
 export GIMP3_DATADIR="$CURRENTDIR"/share/gimp/3.0
 export GIMP3_SYSCONFDIR="$CURRENTDIR"/etc/gimp/3.0
 export GIMP3_LOCALEDIR="$CURRENTDIR"/share/locale
@@ -125,13 +128,41 @@ export GIMP3_PLUGINDIR="$CURRENTDIR"/shared/lib/gimp/3.0
 ln -sfn "$CURRENTDIR"/share /tmp/xdg69
 ln -sfn "$CURRENTDIR"/lib   /tmp/o_0
 
+if [ "$ENABLE_PHOTO_GIMP" = 1 ]; then
+	if [ ! -d "$CONFIGDIR"/PhotoGIMP ]; then
+		mkdir -p "$CONFIGDIR"
+		cp -rv "$CURRENTDIR"/PhotoGIMP/.config/GIMP    "$CONFIGDIR"/PhotoGIMP
+		cp -rvn "$CURRENTDIR"/PhotoGIMP/.local/share/* "$DATADIR"
+	fi
+	export GIMP3_DIRECTORY="$CONFIGDIR"/PhotoGIMP
+fi
+
 exec "$CURRENTDIR"/bin/gimp "$@"' > ./AppRun
 chmod +x ./AppRun
 ./sharun -g
 
+# ADD PHOTOGIMP
+wget "$PHOTOGIMP" -O ./PhotoGIMP.zip
+unzip ./PhotoGIMP.zip
+rm -f ./PhotoGIMP.zip
+mv -v ./PhotoGIMP-linux ./PhotoGIMP
+mv -v ./PhotoGIMP/.local/share/applications/org.gimp.GIMP.desktop \
+	./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
+
+if ! grep -q 'StartupWMClass=' ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop; then
+	echo 'StartupWMClass=Gimp' >> ./PhotoGIMP/.local/share/applications
+fi
+if ! grep -q 'TryExec=' ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop; then
+	echo 'TryExec=gimp' >> ./PhotoGIMP/.local/share/applications
+fi
+
+sed -i -e 's|Exec=.*|Exec=ENABLE_PHOTO_GIMP=1 gimp %U|g' \
+	-e 's|StartupWMClass=.*|StartupWMClass=Gimp|g' \
+	-e 's|TryExec=.*|TryExec=gimp|g' ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
+
 # MAKE APPIMAGE WITH URUNTIME
 cd ..
-wget -q "$URUNTIME" -O ./uruntime
+wget "$URUNTIME" -O ./uruntime
 chmod +x ./uruntime
 
 # Keep the mount point (speeds up launch time)
@@ -150,7 +181,7 @@ echo "Generating AppImage..."
 	--header uruntime \
 	-i ./AppDir -o ./GIMP-"$VERSION"-anylinux-"$ARCH".AppImage
 
-wget -qO ./pelf "https://github.com/xplshn/pelf/releases/latest/download/pelf_$ARCH" 
+wget -O ./pelf "https://github.com/xplshn/pelf/releases/latest/download/pelf_$ARCH" 
 chmod +x ./pelf
 echo "Generating [dwfs]AppBundle...(Go runtime)"
 ./pelf --add-appdir ./AppDir \
