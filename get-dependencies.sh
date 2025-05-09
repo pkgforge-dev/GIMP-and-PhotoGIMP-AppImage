@@ -18,27 +18,28 @@ OPUS_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/
 echo "Installing dependencies..."
 echo "---------------------------------------------------------------"
 pacman -Syu --noconfirm \
-  aalib \
-  alsa-lib \
-  base-devel \
-  cfitsio \
-  curl \
-  desktop-file-utils \
-  ffmpeg \
-  ghostscript \
-  gimp \
-  git \
-  gjs \
-  gtk3 \
-  gvfs \
-  libheif \
-  libmng \
-  librsvg \
-  patchelf \
-  strace \
-  wget \
-  xorg-server-xvfb \
-  zsync
+	aalib \
+	alsa-lib \
+	base-devel \
+	cfitsio \
+	curl \
+	desktop-file-utils \
+	ffmpeg \
+	ghostscript \
+	gimp \
+	git \
+	gjs \
+	gtk3 \
+	gvfs \
+	libheif \
+	libmng \
+	librsvg \
+	patchelf \
+	strace \
+	unzip \
+	wget \
+	xorg-server-xvfb \
+	zsync
 
 echo "Installing debloated pckages..."
 echo "---------------------------------------------------------------"

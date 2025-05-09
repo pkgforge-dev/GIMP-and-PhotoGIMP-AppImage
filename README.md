@@ -1,4 +1,18 @@
-# GIMP-AppImage
+# GIMP-and-PhotoGIMP-AppImage
+
+Unofficial AppImage of GIMP that includes PhotoGIMP, in order to use PhotoGIMP simply run the AppImage once this way: 
+
+```
+ENABLE_PHOTO_GIMP=1 ./GIMP-3.0.2-3-anylinux-x86_64.AppImage
+```
+
+* This will cause it to create a `$XDG_CONFIG_HOME/PhotoGIMP` directory and copy over the PhotoGIMP config files.
+
+* It will also make a desktop entry in `$XDG_DATA_HOME/applications/PhotoGIMP-AppImage.desktop` and copy needed icons to `$XDG_DATA_HOME/icons`
+
+Once done you will be able to keep using PhotoGIMP by launching the new desktop entry, you will also be able to keep using regular GIMP both at the same time.  
+
+----------------------------------------
 
 AppImage made using [sharun](https://github.com/VHSgunzo/sharun), which makes it extremely easy to turn any binary into a portable package without using containers or anything like that.
 
