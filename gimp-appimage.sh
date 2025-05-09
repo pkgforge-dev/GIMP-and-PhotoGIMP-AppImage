@@ -150,10 +150,10 @@ mv -v ./PhotoGIMP/.local/share/applications/org.gimp.GIMP.desktop \
 	./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
 
 if ! grep -q 'StartupWMClass=' ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop; then
-	echo 'StartupWMClass=Gimp' >> ./PhotoGIMP/.local/share/applications
+	echo 'StartupWMClass=Gimp' >> ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
 fi
 if ! grep -q 'TryExec=' ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop; then
-	echo 'TryExec=gimp' >> ./PhotoGIMP/.local/share/applications
+	echo 'TryExec=gimp' >> ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
 fi
 
 sed -i -e 's|Exec=.*|Exec=ENABLE_PHOTO_GIMP=1 gimp %U|g' \
