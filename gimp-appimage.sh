@@ -156,7 +156,7 @@ if ! grep -q 'TryExec=' ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage
 	echo 'TryExec=gimp' >> ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
 fi
 
-sed -i -e 's|Exec=.*|Exec=ENABLE_PHOTO_GIMP=1 gimp %U|g' \
+sed -i -e 's|Exec=.*|Exec=env ENABLE_PHOTO_GIMP=1 gimp %U|g' \
 	-e 's|StartupWMClass=.*|StartupWMClass=Gimp|g' \
 	-e 's|TryExec=.*|TryExec=gimp|g' ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
 
