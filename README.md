@@ -3,14 +3,24 @@
 Unofficial AppImage of GIMP that includes PhotoGIMP, in order to use PhotoGIMP simply run the AppImage once this way: 
 
 ```
-ENABLE_PHOTO_GIMP=1 ./GIMP-3.0.2-3-anylinux-x86_64.AppImage
+ENABLE_PHOTO_GIMP=1 ./GIMP-***-anylinux-x86_64.AppImage
+
+# Alternative you can also run
+
+./GIMP-***-anylinux-x86_64.AppImage --photogimp
 ```
 
 * This will cause it to create a `$XDG_CONFIG_HOME/PhotoGIMP` directory and copy over the PhotoGIMP config files.
 
 * It will also make a desktop entry in `$XDG_DATA_HOME/applications/PhotoGIMP-AppImage.desktop` and copy needed icons to `$XDG_DATA_HOME/icons`
 
-Once done you will be able to keep using PhotoGIMP by launching the new desktop entry, you will also be able to keep using regular GIMP both at the same time.  
+Once done you will be able to keep using PhotoGIMP by launching the new desktop entry, you will also be able to keep using regular GIMP both at the same time.
+
+To uninstall PhotoGIMP simply run:
+
+```
+./GIMP-***-anylinux-x86_64.AppImage --remove-photogimp
+```
 
 ----------------------------------------
 
