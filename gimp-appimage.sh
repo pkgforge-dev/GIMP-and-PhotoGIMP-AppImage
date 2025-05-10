@@ -120,23 +120,23 @@ echo '#!/bin/sh
 CURRENTDIR="$(readlink -f "$(dirname "$0")")"
 CONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}"
 DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
+ARGV0="${ARGV0:-$0}"
+
 export GIMP3_DATADIR="$CURRENTDIR"/share/gimp/3.0
 export GIMP3_SYSCONFDIR="$CURRENTDIR"/etc/gimp/3.0
 export GIMP3_LOCALEDIR="$CURRENTDIR"/share/locale
 export GIMP3_PLUGINDIR="$CURRENTDIR"/shared/lib/gimp/3.0
 
-ln -sfn "$CURRENTDIR"/share /tmp/xdg69
-ln -sfn "$CURRENTDIR"/lib   /tmp/o_0
+_install_photogimp() {
+	if [ ! -d "$CONFIGDIR"/PhotoGIMP ]; then
+		mkdir -p "$CONFIGDIR" "$DATADIR"/applications
+		cp -rv "$CURRENTDIR"/PhotoGIMP/.config/GIMP    "$CONFIGDIR"/PhotoGIMP
+		cp -rvn "$CURRENTDIR"/PhotoGIMP/.local/share/* "$DATADIR"
+	fi
+}
 
-if [ "$1" = "--photogimp" ]; then
-	shift
-	ENABLE_PHOTO_GIMP=1
-elif [ "$(basename "$ARGV0")" = "photogimp" ]; then
-	ENABLE_PHOTO_GIMP=1
-elif [ "$1" = "--remove-photogimp" ]; then
-	shift
+_remove_photogimp() {
 	set -u
-
 	to_remove="$(find "$DATADIR"/icons/hicolor "$DATADIR"/applications -type f \
 		 \( -name "photogimp.*" -o -name "PhotoGIMP-AppImage.desktop" \))"
 
@@ -166,22 +166,32 @@ elif [ "$1" = "--remove-photogimp" ]; then
 		>&2 echo ""
 		exit 1
 	fi
+}
+
+if [ "$1" = "--photogimp" ]; then
+	shift
+	ENABLE_PHOTO_GIMP=1
+elif [ "$1" = "--remove-photogimp" ]; then
+	shift
+	_remove_photogimp
+elif basename "$ARGV0" | grep -qi "photogimp"; then
+	ENABLE_PHOTO_GIMP=1
 fi
 
-
 if [ "$ENABLE_PHOTO_GIMP" = 1 ]; then
-	if [ ! -d "$CONFIGDIR"/PhotoGIMP ]; then
-		mkdir -p "$CONFIGDIR" "$DATADIR"/applications
-		cp -rv "$CURRENTDIR"/PhotoGIMP/.config/GIMP    "$CONFIGDIR"/PhotoGIMP
-		cp -rvn "$CURRENTDIR"/PhotoGIMP/.local/share/* "$DATADIR"
-	fi
+	_install_photogimp
+	export GIMP3_DIRECTORY="$CONFIGDIR"/PhotoGIMP/3.0
 	if [ -n "$APPIMAGE" ]; then
 		sed -i -e "s|^TryExec=.*|TryExec=$APPIMAGE|g" \
 			-e "s|^Exec=.*|Exec=env ENABLE_PHOTO_GIMP=1 $APPIMAGE %U|g" \
 			"$DATADIR"/applications/PhotoGIMP-AppImage.desktop
 	fi
-	export GIMP3_DIRECTORY="$CONFIGDIR"/PhotoGIMP/3.0
 fi
+
+# needed for patched away hardcoded paths in gimp
+# this way we dont need to change the current working dir
+ln -sfn "$CURRENTDIR"/share /tmp/xdg69
+ln -sfn "$CURRENTDIR"/lib   /tmp/o_0
 
 exec "$CURRENTDIR"/bin/gimp "$@"' > ./AppRun
 chmod +x ./AppRun
