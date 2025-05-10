@@ -150,7 +150,7 @@ elif [ "$1" = "--remove-photogimp" ]; then
 	echo "---------------------------------------------"
 	printf "          Remove the above? (y/N) : "
 	read -r yn
-	if echo "$yn" | grep -qi '^y'; then
+	if echo "$yn" | grep -qi "^y"; then
 		rm -rf "$CONFIGDIR"/PhotoGIMP
 		find "$DATADIR"/icons/hicolor "$DATADIR"/applications -type f \
 		 \( -name "photogimp.png" -o -name "PhotoGIMP-AppImage.desktop" \) -delete
