@@ -131,6 +131,8 @@ ln -sfn "$CURRENTDIR"/lib   /tmp/o_0
 if [ "$1" = "--photogimp" ]; then
 	shift
 	ENABLE_PHOTO_GIMP=1
+elif [ "$(basename "$ARGVO")" = "photogimp" ]; then
+	ENABLE_PHOTO_GIMP=1
 elif [ "$1" = "--remove-photogimp" ]; then
 	shift
 	set -u
