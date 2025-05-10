@@ -173,6 +173,11 @@ if [ "$ENABLE_PHOTO_GIMP" = 1 ]; then
 		cp -rv "$CURRENTDIR"/PhotoGIMP/.config/GIMP    "$CONFIGDIR"/PhotoGIMP
 		cp -rvn "$CURRENTDIR"/PhotoGIMP/.local/share/* "$DATADIR"
 	fi
+	if [ -n "$APPIMAGE" ]; then
+		sed -i -e "s|^TryExec=.*|TryExec=$APPIMAGE|g" \
+			-e "s|^Exec=.*|Exec=env ENABLE_PHOTO_GIMP=1 $APPIMAGE %U|g" \
+			"$DATADIR"/applications/PhotoGIMP-AppImage.desktop
+	fi
 	export GIMP3_DIRECTORY="$CONFIGDIR"/PhotoGIMP/3.0
 fi
 
