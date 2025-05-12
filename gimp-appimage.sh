@@ -62,38 +62,6 @@ cp /usr/share/applications/gimp.desktop            ./
 cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./
 cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./.DirIcon
 
-# backport fix from interstellar
-echo '#!/bin/sh
-# xdg-open and gio-launch-desktop wrapper for sharun
-# unsets env variables that cause issues to child processes
-CURRENTDIR="$(readlink -f "$(dirname "$0")")"
-APPDIR="${APPDIR:-${SHARUN_DIR:-$(dirname "$CURRENTDIR")}}"
-PATH="$(echo "$PATH" | sed "s|$CURRENTDIR||g")"
-export PATH
-
-problematic_vars="BABL_PATH GBM_BACKENDS_PATH GCONV_PATH GDK_PIXBUF_MODULEDIR \
-	GDK_PIXBUF_MODULE_FILE GEGL_PATH GIO_MODULE_DIR GI_TYPELIB_PATH \
-	GSETTINGS_SCHEMA_DIR GST_PLUGIN_PATH GST_PLUGIN_SCANNER GST_PLUGIN_SYSTEM_PATH \
-	GST_PLUGIN_SYSTEM_PATH_1_0 GTK_DATA_PREFIX GTK_EXE_PREFIX GTK_IM_MODULE_FILE \
-	GTK_PATH LIBDECOR_PLUGIN_DIR LIBGL_DRIVERS_PATH PERLLIB PIPEWIRE_MODULE_DIR \
-	QT_PLUGIN_PATH SPA_PLUGIN_DIR TCL_LIBRARY TK_LIBRARY XTABLES_LIBDIR"
-for var in $problematic_vars; do
-	checkvar="$(printenv "$var" 2>/dev/null)"
-	if [ -n "$checkvar" ] && echo "$checkvar" | grep -q "$APPDIR"; then
-		unset "$var"
-		>&2 echo "unset $var to prevent issues"
-	fi
-done
-
-if [ "$(basename "$0")" = "gio-launch-desktop" ]; then
-	export GIO_LAUNCHED_DESKTOP_FILE_PID=$$
-	exec "$@"
-else
-	exec xdg-open "$@"
-fi' > ./bin/xdg-open
-ln -s ./xdg-open ./bin/gio-launch-desktop
-chmod +x ./bin/xdg-open
-
 #remove fullpath from gio libs
 sed -i 's|/usr/lib/gio-launch-desktop|/kek/lib/gio-launch-desktop|g' ./shared/lib/libgio-*.so*
 
