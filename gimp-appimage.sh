@@ -62,9 +62,6 @@ cp /usr/share/applications/gimp.desktop            ./
 cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./
 cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./.DirIcon
 
-#remove fullpath from gio libs
-sed -i 's|/usr/lib/gio-launch-desktop|/kek/lib/gio-launch-desktop|g' ./shared/lib/libgio-*.so*
-
 # Fix wrong window class in .desktop
 sed -i 's|StartupWMClass=.*|StartupWMClass=Gimp|' ./gimp.desktop 
 
