@@ -112,7 +112,7 @@ _remove_photogimp() {
 		exit 1
 	fi
 	echo ""
-	[ -d "$CONFIGDIR"/PhotoGIMP ] && echo "$CONFIGDIR"/PhotoGIMP
+	[ -d "$CONFIGDIR"/PhotoGIMP ] && echo "$CONFIGDIR/PhotoGIMP <------ IMPORTANT"
 	echo "$to_remove"
 	echo "---------------------------------------------"
 	printf "          Remove the above? (y/N) : "
