@@ -63,7 +63,7 @@ cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./
 cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./.DirIcon
 
 # Fix wrong window class in .desktop
-sed -i 's|StartupWMClass=.*|StartupWMClass=Gimp|' ./gimp.desktop 
+sed -i 's|StartupWMClass=.*|StartupWMClass=gimp|' ./gimp.desktop 
 
 # sharun the gimp plugins
 echo "Sharunning the gimp plugins..."
