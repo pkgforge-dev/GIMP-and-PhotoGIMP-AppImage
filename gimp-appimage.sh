@@ -171,14 +171,14 @@ mv -v ./PhotoGIMP/.local/share/applications/org.gimp.GIMP.desktop \
 	./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
 
 if ! grep -q 'StartupWMClass=' ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop; then
-	echo 'StartupWMClass=Gimp' >> ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
+	echo 'StartupWMClass=gimp' >> ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
 fi
 if ! grep -q 'TryExec=' ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop; then
 	echo 'TryExec=gimp' >> ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
 fi
 
 sed -i -e 's|Exec=.*|Exec=env ENABLE_PHOTO_GIMP=1 gimp %U|g' \
-	-e 's|StartupWMClass=.*|StartupWMClass=Gimp|g' \
+	-e 's|StartupWMClass=.*|StartupWMClass=gimp|g' \
 	-e 's|TryExec=.*|TryExec=gimp|g' ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
 
 # MAKE APPIMAGE WITH URUNTIME
