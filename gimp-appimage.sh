@@ -202,11 +202,15 @@ echo "Generating AppImage..."
 	--header uruntime \
 	-i ./AppDir -o ./GIMP-"$VERSION"-anylinux-"$ARCH".AppImage
 
+UPINFO="$(echo "$UPINFO" | sed 's#.AppImage#*.AppBundle#g')"
 wget -O ./pelf "https://github.com/xplshn/pelf/releases/latest/download/pelf_$ARCH" 
 chmod +x ./pelf
 echo "Generating [dwfs]AppBundle...(Go runtime)"
 ./pelf --add-appdir ./AppDir \
-	--appbundle-id="GIMP-$VERSION" \
+	--appbundle-id="org.gimp.GIMP#github.com/$GITHUB_REPOSITORY:$VERSION@$(date +%d_%m_%Y)" \
+	--appimage-compat \
+	--disable-use-random-workdir \
+	--add-updinfo "$UPINFO" \
 	--compression "-C zstd:level=22 -S25 -B8" \
 	--output-to GIMP-"$VERSION"-anylinux-"$ARCH".dwfs.AppBundle
 
