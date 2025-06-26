@@ -202,7 +202,7 @@ echo "Generating AppImage..."
 	--header uruntime \
 	-i ./AppDir -o ./GIMP-"$VERSION"-anylinux-"$ARCH".AppImage
 
-UPINFO="$(echo "$UPINFO" | sed 's#.AppImage#*.AppBundle#g')"
+UPINFO="$(echo "$UPINFO" | sed 's#.AppImage.zsync#*.AppBundle.zsync#g')"
 wget -O ./pelf "https://github.com/xplshn/pelf/releases/latest/download/pelf_$ARCH" 
 chmod +x ./pelf
 echo "Generating [dwfs]AppBundle...(Go runtime)"
