@@ -1,4 +1,11 @@
-# GIMP-and-PhotoGIMP-AppImage
+# GIMP-and-PhotoGIMP-AppImage 🐧
+
+[![GitHub Downloads](https://img.shields.io/github/downloads/pkgforge-dev/GIMP-and-PhotoGIMP-AppImage/total?logo=github&label=GitHub%20Downloads)](https://github.com/pkgforge-dev/GIMP-and-PhotoGIMP-AppImage/releases/latest)
+[![CI Build Status](https://github.com//pkgforge-dev/GIMP-and-PhotoGIMP-AppImage/actions/workflows/blank.yml/badge.svg)](https://github.com/pkgforge-dev/GIMP-and-PhotoGIMP-AppImage/releases/latest)
+
+* [Latest Stable Release](https://github.com/pkgforge-dev/GIMP-and-PhotoGIMP-AppImage/releases/latest)
+
+---
 
 Unofficial AppImage of GIMP that includes PhotoGIMP. 
 
