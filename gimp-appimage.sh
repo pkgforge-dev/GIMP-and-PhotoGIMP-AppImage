@@ -104,7 +104,7 @@ sed -i -e 's|Exec=.*|Exec=env ENABLE_PHOTO_GIMP=1 gimp %U|g' \
 sed -i 's|StartupWMClass=.*|StartupWMClass=gimp|' "$DESKTOP"
 
 # TODO remove me once we migrate to quick-sharun
-cp -v "$DESPTOP" ./
+cp -v "$DESKTOP" ./
 cp -v "$ICON"    ./
 cp -v "$ICON"    ./.DirIcon
 
