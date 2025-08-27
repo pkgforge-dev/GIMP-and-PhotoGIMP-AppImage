@@ -6,9 +6,13 @@ export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
 export VERSION="$(cat ~/version)"
 export STRACE_TIME=20
-UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
+export OUTNAME=GIMP-"$VERSION"-anylinux-"$ARCH".AppImage
+export DESKTOP=/usr/share/applications/gimp.desktop  
+export ICON=/usr/share/icons/hicolor/256x256/apps/gimp.png
+export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
+
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
-URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
+URUNTIME="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/uruntime2appimage.sh"
 PHOTOGIMP="https://github.com/Diolinux/PhotoGIMP/releases/latest/download/PhotoGIMP-linux.zip"
 
 # Prepare AppDir
@@ -57,12 +61,6 @@ cp -vr /usr/share/gir-1.0        ./share
 cp -vn /usr/lib/gegl-*/*.json    ./shared/lib/gegl-*
 cp -rvn /usr/lib/gimp            ./shared/lib
 
-cp /usr/share/applications/gimp.desktop            ./
-cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./
-cp /usr/share/icons/hicolor/256x256/apps/gimp.png  ./.DirIcon
-
-# Fix wrong window class in .desktop
-sed -i 's|StartupWMClass=.*|StartupWMClass=gimp|' ./gimp.desktop 
 
 # sharun the gimp plugins
 echo "Sharunning the gimp plugins..."
@@ -180,26 +178,14 @@ sed -i -e 's|Exec=.*|Exec=env ENABLE_PHOTO_GIMP=1 gimp %U|g' \
 	-e 's|StartupWMClass=.*|StartupWMClass=gimp|g' \
 	-e 's|TryExec=.*|TryExec=gimp|g' ./PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
 
+# Fix wrong window class in .desktop
+sed -i 's|StartupWMClass=.*|StartupWMClass=gimp|' "$DESKTOP"
+
 # MAKE APPIMAGE WITH URUNTIME
 cd ..
-wget "$URUNTIME" -O ./uruntime
-chmod +x ./uruntime
-
-# Keep the mount point (speeds up launch time)
-sed -i 's|URUNTIME_MOUNT=[0-9]|URUNTIME_MOUNT=0|' ./uruntime
-
-#Add udpate info to runtime
-echo "Adding update information \"$UPINFO\" to runtime..."
-./uruntime --appimage-addupdinfo "$UPINFO"
-
-echo "Generating AppImage..."
-./uruntime --appimage-mkdwarfs -f \
-	--set-owner 0 --set-group 0 \
-	--no-history --no-create-timestamp \
-	--categorize=hotness --hotness-list=gimp.dwfsprof \
-	--compression zstd:level=22 -S25 -B8 \
-	--header uruntime \
-	-i ./AppDir -o ./GIMP-"$VERSION"-anylinux-"$ARCH".AppImage
+wget --retry-connrefused --tries=30 "$URUNTIME" -O ./uruntime2appimage
+chmod +x ./uruntime2appimage
+./uruntime2appimage
 
 UPINFO="$(echo "$UPINFO" | sed 's#.AppImage.zsync#*.AppBundle.zsync#g')"
 wget -O ./pelf "https://github.com/xplshn/pelf/releases/latest/download/pelf_$ARCH" 
@@ -214,7 +200,6 @@ echo "Generating [dwfs]AppBundle...(Go runtime)"
 	--output-to GIMP-"$VERSION"-anylinux-"$ARCH".dwfs.AppBundle
 
 echo "Generating zsync file..."
-zsyncmake *.AppImage -u *.AppImage
 zsyncmake *.AppBundle -u *.AppBundle
 
 mkdir -p ./dist
