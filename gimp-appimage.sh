@@ -7,6 +7,7 @@ export APPIMAGE_EXTRACT_AND_RUN=1
 export VERSION="$(cat ~/version)"
 export STRACE_TIME=20
 export OUTNAME=GIMP-"$VERSION"-anylinux-"$ARCH".AppImage
+export OPTIMIZE_LAUNCH=1
 export DESKTOP=/usr/share/applications/gimp.desktop  
 export ICON=/usr/share/icons/hicolor/256x256/apps/gimp.png
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
