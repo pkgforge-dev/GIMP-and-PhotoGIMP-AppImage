@@ -5,7 +5,7 @@ concurrency:
 
 on:
   schedule:
-    - cron: "0 15 * * 0"
+    - cron: "0 7 1/21 * *"
   workflow_dispatch:
 
 jobs:
@@ -16,7 +16,6 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Get dependencies
-      if: always()
       run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
 
     - name: Make AppImage
@@ -25,58 +24,45 @@ jobs:
         mkdir dist
         mv *.AppImage* dist/
         mv *.AppBundle* dist/
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4.6.2
-      with:
-        name: AppImage
-        path: 'dist'
-
-    - name: Upload version file
-      uses: actions/upload-artifact@v4.6.2
-      with:
-       name: version
-       path: ~/version
+        mv ~/version dist/
 
   release:
-      if: ${{ github.ref_name == 'main' }}
-      needs: [build]
-      permissions: write-all
-      runs-on: ubuntu-latest
+    if: ${{ github.ref_name == 'main' }}
+    needs: [build]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4.3.0
+        with:
+          pattern: AppImage-*
+          merge-multiple: true
 
-      steps:
-        - uses: actions/download-artifact@v4.3.0
-          with:
-            name: AppImage
-        - uses: actions/download-artifact@v4.3.0
-          with:
-            name: version
+      - name: Read version and Get date
+        run: |
+          cat ./version
+          echo "VERSION=$(cat ./version)" >> "${GITHUB_ENV}"
+          echo "DATE=$(date +'%Y-%m-%d_%s')" >> "${GITHUB_ENV}"
 
-        - name: Read version and Get date
-          run: |
-            echo "VERSION=$(cat version)" >> "${GITHUB_ENV}"
-            echo "DATE=$(date +'%Y-%m-%d_%s')" >> "${GITHUB_ENV}"
+      - name: Release Artifacts
+        uses: softprops/action-gh-release@v2.2.2
+        with:
+          name: "GIMP/PhotoGIMP: ${{ env.VERSION }}"
+          tag_name: "${{ env.VERSION }}@${{ env.DATE }}"
+          prerelease: false
+          draft: false
+          generate_release_notes: false
+          fail_on_unmatched_files: false
+          make_latest: true
+          files: |
+            *.AppImage*
+            *.AppBundle*
 
-        - name: Release Artifacts
-          uses: softprops/action-gh-release@v2.2.2
-          with:
-            name: "GIMP/PhotoGIMP: ${{ env.VERSION }}"
-            tag_name: "${{ env.VERSION }}@${{ env.DATE }}"
-            prerelease: false
-            draft: false
-            generate_release_notes: false
-            fail_on_unmatched_files: false
-            make_latest: true
-            files: |
-              *.AppImage*
-              *.AppBundle*
-
-        - uses: actions/checkout@v4
-        - name: Update LATEST_VERSION
-          run: |
-            echo "${{ env.VERSION }}" > ./LATEST_VERSION
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add ./LATEST_VERSION
-            git commit --allow-empty -m 'bump `LATEST_VERSION` [skip ci]'
-            git push
+      - uses: actions/checkout@v4
+      - name: Update LATEST_VERSION
+        run: |
+          echo "${{ env.VERSION }}" > ./LATEST_VERSION
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ./LATEST_VERSION
+          git commit --allow-empty -m 'bump `LATEST_VERSION` [skip ci]'
+          git push
