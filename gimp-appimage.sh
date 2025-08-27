@@ -4,8 +4,7 @@ set -eu
 
 export ARCH="$(uname -m)"
 export APPIMAGE_EXTRACT_AND_RUN=1
-export VERSION="$(pacman -Q gimp | awk 'NR==1 {print $2; exit}')"
-echo "$VERSION" > ~/version
+export VERSION="$(cat ~/version)"
 export STRACE_TIME=20
 UPINFO="gh-releases-zsync|$(echo $GITHUB_REPOSITORY | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
@@ -217,5 +216,10 @@ echo "Generating [dwfs]AppBundle...(Go runtime)"
 echo "Generating zsync file..."
 zsyncmake *.AppImage -u *.AppImage
 zsyncmake *.AppBundle -u *.AppBundle
+
+mkdir -p ./dist
+mv -v ./*.AppImage*  ./dist
+mv -v ./*.AppBundle* ./dist
+mv -v ~/version      ./dist
 
 echo "All Done!"
