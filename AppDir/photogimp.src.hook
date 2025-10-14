@@ -51,15 +51,13 @@ _remove_photogimp() {
 	fi
 }
 
-if [ "$1" = "--photogimp" ]; then
-	shift
-	ENABLE_PHOTO_GIMP=1
-elif [ "$1" = "--remove-photogimp" ]; then
-	shift
-	_remove_photogimp
-elif basename "$ARGV0" | grep -qi "photogimp"; then
-	ENABLE_PHOTO_GIMP=1
-fi
+case "$1" in
+	--photogimp)        shift; ENABLE_PHOTO_GIMP=1;;
+	--remove-photogimp) shift; _remove_photogimp  ;;
+esac
+case "$ARGV0" in
+	*photogimp*|*Photogimp*|*PhotoGimp*|*PhotoGIMP*) ENABLE_PHOTO_GIMP=1;;
+esac
 
 if [ "$ENABLE_PHOTO_GIMP" = 1 ]; then
 	_install_photogimp
@@ -70,10 +68,3 @@ if [ "$ENABLE_PHOTO_GIMP" = 1 ]; then
 			"$DATADIR"/applications/PhotoGIMP-AppImage.desktop
 	fi
 fi
-
-# needed for patched away hardcoded paths in gimp
-# this way we dont need to change the current working dir
-ln -sfn "$CURRENTDIR"/share /tmp/xdg69
-ln -sfn "$CURRENTDIR"/lib   /tmp/o_0
-
-exec "$CURRENTDIR"/bin/gimp "$@"
