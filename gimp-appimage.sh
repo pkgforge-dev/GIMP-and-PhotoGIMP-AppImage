@@ -8,15 +8,16 @@ SHARUN="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/h
 URUNTIME="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/uruntime2appimage.sh"
 PHOTOGIMP="https://github.com/Diolinux/PhotoGIMP/releases/latest/download/PhotoGIMP-linux.zip"
 
+export ADD_HOOKS="self-updater.bg.hook"
 export STRACE_TIME=15
-export OUTNAME=GIMP-"$VERSION"-anylinux-"$ARCH".AppImage
 export DEPLOY_OPENGL=1
 export DEPLOY_PYTHON=1
 export PYTHON_PACKAGES=PyGObject
-export OPTIMIZE_LAUNCH=1
 export DESKTOP=/usr/share/applications/gimp.desktop
 export ICON=/usr/share/icons/hicolor/256x256/apps/gimp.png
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
+export OUTNAME=GIMP-"$VERSION"-anylinux-"$ARCH".AppImage
+export OPTIMIZE_LAUNCH=1
 
 # ADD LIBRARIES
 wget --retry-connrefused --tries=30 "$SHARUN" -O ./quick-sharun
@@ -59,7 +60,7 @@ for plugin in $bins_to_find; do
 done
 
 # ADD PHOTOGIMP
-wget "$PHOTOGIMP" -O ./PhotoGIMP.zip
+wget --retry-connrefused --tries=30 "$PHOTOGIMP" -O ./PhotoGIMP.zip
 unzip ./PhotoGIMP.zip
 rm -f ./PhotoGIMP.zip
 mv -v ./PhotoGIMP-linux ./AppDir/PhotoGIMP
@@ -94,11 +95,11 @@ echo "Generating [dwfs]AppBundle...(Go runtime)"
 	--appimage-compat \
 	--disable-use-random-workdir \
 	--add-updinfo "$UPINFO" \
-	--compression "-C zstd:level=22 -S25 -B8" \
-	--output-to GIMP-"$VERSION"-anylinux-"$ARCH".dwfs.AppBundle
+	--compression "-C zstd:level=22 -S26 -B8" \
+	--output-to ./GIMP-"$VERSION"-anylinux-"$ARCH".dwfs.AppBundle
 
 echo "Generating zsync file..."
-zsyncmake *.AppBundle -u *.AppBundle
+zsyncmake ./*.AppBundle -u ./*.AppBundle
 
 mkdir -p ./dist
 mv -v ./*.AppImage*  ./dist
