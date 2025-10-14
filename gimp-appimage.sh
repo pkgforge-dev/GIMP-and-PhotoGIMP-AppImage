@@ -12,6 +12,7 @@ export ADD_HOOKS="self-updater.bg.hook"
 export STRACE_TIME=15
 export DEPLOY_OPENGL=1
 export DEPLOY_PYTHON=1
+export DEPLOY_LOCALE=1
 export PYTHON_PACKAGES=PyGObject
 export DESKTOP=/usr/share/applications/gimp.desktop
 export ICON=/usr/share/icons/hicolor/256x256/apps/gimp.png
@@ -35,7 +36,6 @@ chmod +x ./quick-sharun
 	/usr/lib/libheif/*           \
 	/usr/lib/libjbig2dec*        \
 	/usr/lib/libgpm*             \
-	/usr/lib/libgs.so*           \
 	/usr/lib/libpaper*           \
 	/usr/lib/libSDL*             \
 	/usr/lib/libXpm.so*          \
