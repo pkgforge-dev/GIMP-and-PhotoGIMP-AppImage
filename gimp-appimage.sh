@@ -13,6 +13,7 @@ export STRACE_TIME=15
 export DEPLOY_OPENGL=1
 export DEPLOY_PYTHON=1
 export DEPLOY_LOCALE=1
+export DEPLOY_LIBHEIF=1
 export PYTHON_PACKAGES=PyGObject
 export DESKTOP=/usr/share/applications/gimp.desktop
 export ICON=/usr/share/icons/hicolor/256x256/apps/gimp.png
