@@ -35,6 +35,7 @@ chmod +x ./quick-sharun
 	/usr/lib/libgthread-2.0.so*  \
 	/usr/lib/libheif/*           \
 	/usr/lib/libjbig2dec*        \
+	/usr/lib/libgs.so*           \
 	/usr/lib/libgpm*             \
 	/usr/lib/libpaper*           \
 	/usr/lib/libSDL*             \
