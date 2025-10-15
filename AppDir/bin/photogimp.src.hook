@@ -3,7 +3,6 @@
 CURRENTDIR="$(cd "${0%/*}" && echo "$PWD")"
 CONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}"
 DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
-ARGV0="${ARGV0:-$0}"
 
 export GIMP3_DATADIR="$CURRENTDIR"/share/gimp/3.0
 export GIMP3_SYSCONFDIR="$CURRENTDIR"/etc/gimp/3.0
