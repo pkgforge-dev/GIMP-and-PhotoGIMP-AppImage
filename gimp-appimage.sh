@@ -33,7 +33,6 @@ chmod +x ./quick-sharun
 	/usr/lib/gvfs/*              \
 	/usr/lib/libcfitsio.so*      \
 	/usr/lib/libgthread-2.0.so*  \
-	/usr/lib/libheif/*           \
 	/usr/lib/libjbig2dec*        \
 	/usr/lib/libXmu.so*          \
 	/usr/lib/libwebpdemux.so*    \
@@ -42,7 +41,6 @@ chmod +x ./quick-sharun
 	/usr/lib/libpaper*           \
 	/usr/lib/libSDL*             \
 	/usr/lib/libXpm.so*          \
-	/usr/lib/libheif.so*         \
 	/usr/lib/libwmf*             \
 	/usr/lib/libudev.so*         \
 	/usr/lib/libaa.so*           \
