@@ -15,6 +15,7 @@ export DEPLOY_PYTHON=1
 export DEPLOY_LOCALE=1
 export DEPLOY_LIBHEIF=1
 export PYTHON_PACKAGES=PyGObject
+export PYTHON_LEAVE_PIP=1
 export DESKTOP=/usr/share/applications/gimp.desktop
 export ICON=/usr/share/icons/hicolor/256x256/apps/gimp.png
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
