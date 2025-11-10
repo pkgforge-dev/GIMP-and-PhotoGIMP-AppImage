@@ -25,7 +25,7 @@ jobs:
       image: ghcr.io/pkgforge-dev/archlinux:latest
       options: --privileged --device /dev/fuse
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Get dependencies
         run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
@@ -70,7 +70,7 @@ jobs:
             *.AppImage*
             *.AppBundle*
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Update LATEST_VERSION
         run: |
           echo "${{ env.VERSION }}" > ./LATEST_VERSION
