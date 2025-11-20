@@ -23,13 +23,9 @@ export OPTIMIZE_LAUNCH=1
 # ADD LIBRARIES
 quick-sharun \
 	/usr/bin/gimp*               \
-	/usr/lib/gimp/*              \
-	/usr/lib/gimp/*/*            \
-	/usr/lib/gimp/*/*/*          \
+	/usr/lib/gimp                \
 	/usr/bin/gjs*                \
-	/usr/bin/gegl                \
 	/usr/lib/libgimp*            \
-	/usr/lib/gtk-*/*/*/*         \
 	/usr/lib/libcfitsio.so*      \
 	/usr/lib/libgthread-2.0.so*  \
 	/usr/lib/libjbig2dec*        \
