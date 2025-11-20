@@ -1,12 +1,11 @@
-name: Appimage
+name: Anylinux-AppImage
 concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
-
 on:
   schedule:
-    - cron: "0 7 1/21 * *"
-  workflow_dispatch:
+    - cron: "0 7 1/21 * *" # We default to rebuilding every 21 days, change this to your liking
+  workflow_dispatch: {}
 
 jobs:
   build:
@@ -18,6 +17,7 @@ jobs:
           - runs-on: ubuntu-latest
             name: Build AppImage
             arch: x86_64
+          # comment out these 3 lines if aarch64 is not wanted
           - runs-on: ubuntu-24.04-arm
             name: Build AppImage
             arch: aarch64
@@ -25,16 +25,15 @@ jobs:
       image: ghcr.io/pkgforge-dev/archlinux:latest
       options: --privileged --device /dev/fuse
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Get dependencies
-        run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
-  
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Preparing Container
+        uses: pkgforge-dev/anylinux-setup-action@8872fabe63f9a00b35e25b2f46da62a05afc9a7d # v1
+      - name: Install Dependencies
+        run: /bin/sh ./get-dependencies.sh
       - name: Make AppImage
-        run: chmod +x ./*-appimage.sh && ./*-appimage.sh
-
+        run: /bin/sh ./make-appimage.sh
       - name: Upload artifact
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: AppImage-${{ matrix.arch }}
           path: dist
@@ -45,17 +44,15 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4.3.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           pattern: AppImage-*
           merge-multiple: true
-
       - name: Read version and Get date
         run: |
           cat ./version
           echo "VERSION=$(cat ./version)" >> "${GITHUB_ENV}"
           echo "DATE=$(date +'%Y-%m-%d_%s')" >> "${GITHUB_ENV}"
-
       - name: Release Artifacts
         uses: softprops/action-gh-release@v2.2.2
         with:
@@ -69,7 +66,6 @@ jobs:
           files: |
             *.AppImage*
             *.AppBundle*
-
       - uses: actions/checkout@v4
       - name: Update LATEST_VERSION
         run: |
