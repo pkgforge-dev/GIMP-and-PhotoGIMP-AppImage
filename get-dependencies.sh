@@ -21,7 +21,7 @@ pacman -Syu --noconfirm \
 
 echo "Installing debloated packages..."
 echo "---------------------------------------------------------------"
-get-debloated-pkgs.sh --add-common --prefer-nano
+get-debloated-pkgs --add-common --prefer-nano
 
 # set version
 pacman -Q gimp | awk '{print $2; exit}' > ~/version
