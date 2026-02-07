@@ -2,11 +2,12 @@
 
 set -eu
 
-ARCH="$(uname -m)"
-VERSION="$(cat ~/version)"
-export ARCH VERSION
+ARCH=$(uname -m)
+export ARCH
 export ADD_HOOKS="self-updater.bg.hook"
-export STRACE_TIME=15
+export OUTPATH=./dist
+export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
+export STRACE_TIME=12
 export DEPLOY_OPENGL=1
 export DEPLOY_PYTHON=1
 export DEPLOY_LOCALE=1
@@ -16,11 +17,10 @@ export PYTHON_PACKAGES=PyGObject
 export PYTHON_LEAVE_PIP=1
 export DESKTOP=/usr/share/applications/gimp.desktop
 export ICON=/usr/share/icons/hicolor/256x256/apps/gimp.png
-export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
-export OUTNAME=GIMP-"$VERSION"-anylinux-"$ARCH".AppImage
+export APPNAME=GIMP
 export OPTIMIZE_LAUNCH=1
 
-# ADD LIBRARIES
+# Deploy dependencies
 quick-sharun \
 	/usr/bin/gimp*               \
 	/usr/lib/gimp                \
@@ -60,34 +60,14 @@ if ! grep -q 'TryExec=' ./AppDir/PhotoGIMP/.local/share/applications/PhotoGIMP-A
 	echo 'TryExec=gimp' >> ./AppDir/PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
 fi
 
-sed -i -e 's|Exec=.*|Exec=env ENABLE_PHOTO_GIMP=1 gimp %U|g' \
-	-e 's|StartupWMClass=.*|StartupWMClass=gimp|g' \
-	-e 's|TryExec=.*|TryExec=gimp|g' ./AppDir/PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
+sed -i \
+	-e 's|Exec=.*|Exec=env ENABLE_PHOTO_GIMP=1 gimp %U|g' \
+	-e 's|StartupWMClass=.*|StartupWMClass=gimp|g'        \
+	-e 's|TryExec=.*|TryExec=gimp|g'                      \
+	./AppDir/PhotoGIMP/.local/share/applications/PhotoGIMP-AppImage.desktop
 
 # Fix wrong window class in .desktop
 sed -i 's|StartupWMClass=.*|StartupWMClass=gimp|' ./AppDir/*.desktop
 
-# MAKE APPIMAGE WITH URUNTIME
+# Turn AppDir into AppImage
 quick-sharun --make-appimage
-
-UPINFO="$(echo "$UPINFO" | sed 's#.AppImage.zsync#*.AppBundle.zsync#g')"
-wget -O ./pelf "https://github.com/xplshn/pelf/releases/latest/download/pelf_$ARCH"
-chmod +x ./pelf
-echo "Generating [dwfs]AppBundle...(Go runtime)"
-./pelf --add-appdir ./AppDir \
-	--appbundle-id="org.gimp.GIMP#github.com/$GITHUB_REPOSITORY:$VERSION@$(date +%d_%m_%Y)" \
-	--appimage-compat \
-	--disable-use-random-workdir \
-	--add-updinfo "$UPINFO" \
-	--compression "-C zstd:level=22 -S26 -B8" \
-	--output-to ./GIMP-"$VERSION"-anylinux-"$ARCH".dwfs.AppBundle
-
-echo "Generating zsync file..."
-zsyncmake ./*.AppBundle -u ./*.AppBundle
-
-mkdir -p ./dist
-mv -v ./*.AppImage*  ./dist
-mv -v ./*.AppBundle* ./dist
-mv -v ~/version      ./dist
-
-echo "All Done!"
