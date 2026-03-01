@@ -14,7 +14,7 @@
 AppImage of GIMP that includes PhotoGIMP. 
 | Latest Stable Release | Upstream URL |
 | :---: | :---: |
-| [Click here](https://github.com/pkgforge-dev/GIMP-and-PhotoGIMP-AppImage/releases/latest) | [Click here](https://github.com/pkgforge-dev/Anylinux-AppImages) |
+| [Click here](https://github.com/pkgforge-dev/GIMP-and-PhotoGIMP-AppImage/releases/latest) | [GIMP](https://gitlab.gnome.org/GNOME/gimp) \| [PhotoGIMP](https://github.com/Diolinux/PhotoGIMP) |
 
 </div>
 
