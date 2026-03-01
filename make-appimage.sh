@@ -7,14 +7,12 @@ export ARCH
 export ADD_HOOKS="self-updater.bg.hook"
 export OUTPATH=./dist
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
-export STRACE_TIME=12
+export STRACE_TIME=10
 export DEPLOY_OPENGL=1
-export DEPLOY_PYTHON=1
+export DEPLOY_SYS_PYTHON=1
 export DEPLOY_LOCALE=1
 export DEPLOY_SDL=1
 export DEPLOY_LIBHEIF=1
-export PYTHON_PACKAGES=PyGObject
-export PYTHON_LEAVE_PIP=1
 export DESKTOP=/usr/share/applications/gimp.desktop
 export ICON=/usr/share/icons/hicolor/256x256/apps/gimp.png
 export APPNAME=GIMP
@@ -36,12 +34,10 @@ quick-sharun \
 	/usr/lib/libpaper*           \
 	/usr/lib/libXpm.so*          \
 	/usr/lib/libwmf*             \
-	/usr/lib/libudev.so*         \
 	/usr/lib/libaa.so*           \
 	/usr/lib/libmng.so*          \
 	/usr/share/pixmaps           \
 	/etc/gimp                    \
-	/usr/share/vala              \
 	/usr/share/gir-1.0
 
 # ADD PHOTOGIMP
