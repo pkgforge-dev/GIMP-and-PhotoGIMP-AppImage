@@ -7,7 +7,7 @@ export ARCH
 export ADD_HOOKS="self-updater.bg.hook"
 export OUTPATH=./dist
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
-export STRACE_TIME=10
+export STRACE_TIME=5
 export DEPLOY_OPENGL=1
 export DEPLOY_PYTHON=1
 export DEPLOY_LOCALE=1
