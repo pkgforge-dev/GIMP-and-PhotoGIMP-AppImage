@@ -13,8 +13,6 @@ export DEPLOY_PYTHON=1
 export DEPLOY_LOCALE=1
 export DEPLOY_SDL=1
 export DEPLOY_LIBHEIF=1
-export DEPLOY_QT=1
-export QT_DIR=qt6
 export DESKTOP=/usr/share/applications/gimp.desktop
 export ICON=/usr/share/icons/hicolor/256x256/apps/gimp.png
 export APPNAME=GIMP
@@ -25,6 +23,7 @@ quick-sharun \
 	/usr/bin/gimp*               \
 	/usr/lib/gimp                \
 	/usr/bin/gjs*                \
+	/usr/bin/gmic*               \
 	/usr/lib/libgimp*            \
 	/usr/lib/libcfitsio.so*      \
 	/usr/lib/libgthread-2.0.so*  \
