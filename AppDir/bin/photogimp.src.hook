@@ -1,19 +1,15 @@
 #!/bin/sh
 
-CURRENTDIR="$(cd "${0%/*}" && echo "$PWD")"
-CONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}"
-DATADIR="${XDG_DATA_HOME:-$HOME/.local/share}"
-
-export GIMP3_DATADIR="$CURRENTDIR"/share/gimp/3.0
-export GIMP3_SYSCONFDIR="$CURRENTDIR"/etc/gimp/3.0
-export GIMP3_LOCALEDIR="$CURRENTDIR"/share/locale
-export GIMP3_PLUGINDIR="$CURRENTDIR"/shared/lib/gimp/3.0
+export GIMP3_DATADIR="$APPDIR"/share/gimp/3.0
+export GIMP3_SYSCONFDIR="$APPDIR"/etc/gimp/3.0
+export GIMP3_LOCALEDIR="$APPDIR"/share/locale
+export GIMP3_PLUGINDIR="$APPDIR"/shared/lib/gimp/3.0
 
 _install_photogimp() {
 	if [ ! -d "$CONFIGDIR"/PhotoGIMP ]; then
 		mkdir -p "$CONFIGDIR" "$DATADIR"/applications
-		cp -rv "$CURRENTDIR"/PhotoGIMP/.config/GIMP    "$CONFIGDIR"/PhotoGIMP
-		cp -rvn "$CURRENTDIR"/PhotoGIMP/.local/share/* "$DATADIR"
+		cp -rv "$APPDIR"/PhotoGIMP/.config/GIMP    "$CONFIGDIR"/PhotoGIMP
+		cp -rvn "$APPDIR"/PhotoGIMP/.local/share/* "$DATADIR"
 	fi
 }
 
@@ -23,38 +19,43 @@ _remove_photogimp() {
 		 \( -name "photogimp.*" -o -name "PhotoGIMP-AppImage.desktop" \))"
 
 	if [ -z "$to_remove" ] && [ ! -d "$CONFIGDIR"/PhotoGIMP ]; then
-		>&2 echo ""
-		>&2 echo " PhotoGIMP is NOT installed!"
-		>&2 echo ""
+		err_msg ""
+		err_msg " PhotoGIMP is NOT installed!"
+		err_msg ""
 		exit 1
 	fi
 	echo ""
-	[ -d "$CONFIGDIR"/PhotoGIMP ] && echo "$CONFIGDIR/PhotoGIMP <------ IMPORTANT"
+	if [ -d "$CONFIGDIR"/PhotoGIMP ]; then
+		echo "$CONFIGDIR/PhotoGIMP <------ IMPORTANT!"
+	fi
 	echo "$to_remove"
 	echo "---------------------------------------------"
 	printf "          Remove the above? (y/N) : "
 	read -r yn
-	if echo "$yn" | grep -qi "^y"; then
-		rm -rf "$CONFIGDIR"/PhotoGIMP
-		find "$DATADIR"/icons/hicolor "$DATADIR"/applications -type f \
-		 \( -name "photogimp.png" -o -name "PhotoGIMP-AppImage.desktop" \) -delete
-		echo ""
-		echo " Removed PhotoGIMP."
-		echo ""
-		exit 0
-	else
-		>&2 echo ""
-		>&2 echo " Aborting..."
-		>&2 echo ""
-		exit 1
-	fi
+	case "$yn" in
+		y*|Y*)
+			rm -rf "$CONFIGDIR"/PhotoGIMP
+			find "$DATADIR"/icons/hicolor "$DATADIR"/applications -type f \
+			  \( -name "photogimp.png" -o -name "PhotoGIMP-AppImage.desktop" \) -delete
+			echo ""
+			echo " Removed PhotoGIMP."
+			echo ""
+			exit 0
+			;;
+		*)
+			err_msg ""
+			err_msg " Aborting..."
+			err_msg ""
+			exit 1
+			;;
+	esac
 }
 
 case "$1" in
 	--photogimp)        shift; ENABLE_PHOTO_GIMP=1;;
 	--remove-photogimp) shift; _remove_photogimp  ;;
 esac
-case "$ARGV0" in
+case "$BIN" in
 	*photogimp*|*Photogimp*|*PhotoGimp*|*PhotoGIMP*) ENABLE_PHOTO_GIMP=1;;
 esac
 
