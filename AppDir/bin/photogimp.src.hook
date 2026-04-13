@@ -55,7 +55,7 @@ case "$1" in
 	--photogimp)        shift; ENABLE_PHOTO_GIMP=1;;
 	--remove-photogimp) shift; _remove_photogimp  ;;
 esac
-case "$BIN" in
+case "$ARG0" in
 	*photogimp*|*Photogimp*|*PhotoGimp*|*PhotoGIMP*) ENABLE_PHOTO_GIMP=1;;
 esac
 
