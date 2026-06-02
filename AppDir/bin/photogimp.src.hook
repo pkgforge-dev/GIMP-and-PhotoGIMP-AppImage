@@ -64,7 +64,7 @@ if [ "$ENABLE_PHOTO_GIMP" = 1 ]; then
 	export GIMP3_DIRECTORY="$CONFIGDIR"/PhotoGIMP/3.0
 	if [ -n "$APPIMAGE" ]; then
 		sed -i -e "s|^TryExec=.*|TryExec=$APPIMAGE|g" \
-			-e "s|^Exec=.*|Exec=env ENABLE_PHOTO_GIMP=1 $APPIMAGE %U|g" \
+			-e "s|^Exec=.*|Exec=env ENABLE_PHOTO_GIMP=1 \"$APPIMAGE\" %U|g" \
 			"$DATADIR"/applications/PhotoGIMP-AppImage.desktop
 	fi
 fi
