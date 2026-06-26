@@ -17,6 +17,10 @@ export DESKTOP=/usr/share/applications/gimp.desktop
 export ICON=/usr/share/icons/hicolor/256x256/apps/gimp.png
 export APPNAME=GIMP
 export OPTIMIZE_LAUNCH=1
+export STRACE_BINARY=gimp
+
+wget https://raw.githubusercontent.com/Samueru-sama/Anylinux-AppImages/refs/heads/main/useful-tools/quick-sharun.sh -O /usr/local/bin/quick-sharun
+chmod +x /usr/local/bin/quick-sharun
 
 # Deploy dependencies
 quick-sharun \
